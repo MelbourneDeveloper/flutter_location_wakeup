@@ -1,5 +1,6 @@
+/// Extensions for nullable types
 extension NullyExtensions<T> on T? {
-  ///Allows you to perform an async action on a value only when that value is 
+  ///Allows you to perform an async action on a value only when that value is
   ///not null. and happens first because its synchronous
   Future<void> let(
     Future<void> Function(T) action, {
