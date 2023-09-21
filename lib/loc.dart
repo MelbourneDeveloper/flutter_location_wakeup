@@ -1,4 +1,4 @@
-import 'loc_platform_interface.dart';
+import 'package:loc/loc_platform_interface.dart';
 
 ///Allows you to perform an async action on a value only when that value is not
 ///null. and happens first because its synchronous
@@ -34,31 +34,27 @@ abstract class Result<T, E> {
 }
 
 class Success<T, E> extends Result<T, E> {
+  Success(this.value);
   @override
   final T value;
-  Success(this.value);
 }
 
 class Error<T, E> extends Result<T, E> {
+  Error(this.error);
   @override
   final E error;
-  Error(this.error);
 }
 
 class Location {
+  Location(this.latitude, this.longitude);
   final double latitude;
   final double longitude;
-
-  Location(this.latitude, this.longitude);
 }
 
 class Loc {
-  Future<void> startMonitoring() {
-    return LocPlatform.instance.startMonitoring();
-  }
+  Future<void> startMonitoring() => LocPlatform.instance.startMonitoring();
 
-  Stream<Result<Location, String>> get locationUpdates {
-    return LocPlatform.instance.locationUpdates
-        .map((event) => Success(Location(34.0522, 118.2437)));
-  }
+  Stream<Result<Location, String>> get locationUpdates =>
+      LocPlatform.instance.locationUpdates
+          .map((map) => Success(Location(map['latitude']!, map['longitude']!)));
 }
