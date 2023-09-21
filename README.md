@@ -8,6 +8,19 @@ Currently only supports iOS. Android version pending...
 
 This is an example that you can use in the `State` of a stateful widget to listen for location updates and display them in a `SnackBar`:
 
+## iOS
+
+Add these to your `Info.plist`:
+
+```xml
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need your location for...</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>We need your location for...</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>We need your location for...</string>
+```
+
 ```dart
   Future<void> startListening() async {
     if (!mounted) return;
