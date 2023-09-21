@@ -27,11 +27,25 @@ class LocationResult {
   ///return a default value if it is not
   Location locationOr(Location Function(Error error) onError) =>
       isSuccess ? _location! : onError(_error!);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is LocationResult &&
+        other._location == _location &&
+        other._error == _error;
+  }
+
+  @override
+  int get hashCode => _location.hashCode ^ _error.hashCode;
+
+  @override
+  String toString() => 'LocationResult(_location: $_location, _error: $_error)';
 }
 
 ///Represents an error from the device in regards to location
 class Error {
-
   ///Creates an error with the given message
   const Error(this.message);
 
