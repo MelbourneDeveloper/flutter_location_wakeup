@@ -1,10 +1,10 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:loc/loc.dart';
+import 'package:loc/model.dart';
+import 'package:loc/extensions.dart';
 
 final messengerStateKey = GlobalKey<ScaffoldMessengerState>();
 
@@ -57,7 +57,7 @@ class _LocationDisplayState extends State<LocationDisplay> {
     }
   }
 
-  void bing(Result result) {
+  void bing(LocationResult result) {
     _display = result.match(
         onSuccess: (l) => 'Lat: ${l.latitude}\nLong: ${l.longitude}',
         onError: (e) => e.message);
