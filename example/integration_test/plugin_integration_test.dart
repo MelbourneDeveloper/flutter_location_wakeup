@@ -1,14 +1,14 @@
+import 'package:flutter_location_wakeup/location_wakeup.dart';
+import 'package:flutter_location_wakeup/model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:loc/loc.dart';
-import 'package:loc/model.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('Monitor And Wait For First Location',
       (WidgetTester tester) async {
-    final Loc plugin = Loc();
+    final LocationWakeup plugin = LocationWakeup();
     final resultFuture = plugin.locationUpdates.first;
     await plugin.startMonitoring();
     final result = await resultFuture;

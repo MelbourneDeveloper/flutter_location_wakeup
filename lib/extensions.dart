@@ -1,4 +1,4 @@
-import 'package:loc/model.dart';
+import 'package:flutter_location_wakeup/model.dart';
 
 /// Extensions for nullable types
 extension NullyExtensions<T> on T? {

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:loc/loc.dart';
-import 'package:loc/model.dart';
-import 'package:loc/extensions.dart';
+import 'package:flutter_location_wakeup/location_wakeup.dart';
+import 'package:flutter_location_wakeup/model.dart';
+import 'package:flutter_location_wakeup/extensions.dart';
 
 final messengerStateKey = GlobalKey<ScaffoldMessengerState>();
 
@@ -32,32 +32,32 @@ class LocationDisplay extends StatefulWidget {
 
 class _LocationDisplayState extends State<LocationDisplay> {
   String _display = 'Unknown';
-  final _locPlugin = Loc();
+  final _locationWakeup = LocationWakeup();
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
+    startListening();
   }
 
-  Future<void> initPlatformState() async {
+  Future<void> startListening() async {
     if (!mounted) return;
 
     try {
-      _locPlugin.locationUpdates.listen(
+      _locationWakeup.locationUpdates.listen(
         (result) {
           if (!mounted) return;
 
-          setState(() => bing(result));
+          setState(() => onLocationResultChange(result));
         },
       );
-      await _locPlugin.startMonitoring();
+      await _locationWakeup.startMonitoring();
     } on PlatformException {
       // Handle exception
     }
   }
 
-  void bing(LocationResult result) {
+  void onLocationResultChange(LocationResult result) {
     _display = result.match(
         onSuccess: (l) => 'Lat: ${l.latitude}\nLong: ${l.longitude}',
         onError: (e) => e.message);

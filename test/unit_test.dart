@@ -1,6 +1,6 @@
+import 'package:flutter_location_wakeup/extensions.dart';
+import 'package:flutter_location_wakeup/model.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:loc/extensions.dart';
-import 'package:loc/model.dart';
 
 void main() {
   group('LocationResult', () {
@@ -83,8 +83,7 @@ void main() {
   group('LocationExtensions', () {
     test(
         'should return LocationResult with Location when both '
-        'latitude and longitude are present',
-        () {
+        'latitude and longitude are present', () {
       final map = {'latitude': 40.7128, 'longitude': 74.0060};
       final result = map.toLocationResult();
 
@@ -111,7 +110,7 @@ void main() {
           onSuccess: (location) => null,
           onError: (error) => error,
         ),
-        const Error('Latitude or longitude is missing'), 
+        const Error('Latitude or longitude is missing'),
       );
     });
 
@@ -127,14 +126,13 @@ void main() {
           onSuccess: (location) => null,
           onError: (error) => error,
         ),
-        const Error('Latitude or longitude is missing'), 
+        const Error('Latitude or longitude is missing'),
       );
     });
 
     test(
         'should return LocationResult with Error when both '
-        'latitude and longitude are missing',
-        () {
+        'latitude and longitude are missing', () {
       final map = <String, double>{};
       final result = map.toLocationResult();
 
@@ -145,7 +143,7 @@ void main() {
           onSuccess: (location) => null,
           onError: (error) => error,
         ),
-        const Error('Latitude or longitude is missing'), 
+        const Error('Latitude or longitude is missing'),
       );
     });
   });

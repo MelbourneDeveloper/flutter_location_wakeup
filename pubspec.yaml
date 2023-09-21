@@ -1,6 +1,6 @@
-name: loc
-description: A new Flutter plugin project.
-version: 0.0.1
+name: flutter_location_wakeup
+description: Listens for significant location changes the device and wakes it up when they arrive
+version: 0.1.0-beta
 homepage:
 
 environment:
@@ -8,12 +8,12 @@ environment:
   flutter: '>=3.3.0'
 
 dependencies:
-  austerity: ^1.1.0
   flutter:
     sdk: flutter
   plugin_platform_interface: ^2.0.2
 
-dev_dependencies:
+dev_dependencies:  
+  austerity: ^1.1.0
   flutter_lints: ^2.0.0
   flutter_test:
     sdk: flutter
