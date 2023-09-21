@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:loc/extensions.dart';
 import 'package:loc/model.dart';
 
 void main() {
@@ -75,6 +76,76 @@ void main() {
       expect(
         result2.locationOr((error) => location2),
         location2,
+      );
+    });
+  });
+
+  group('LocationExtensions', () {
+    test(
+        'should return LocationResult with Location when both '
+        'latitude and longitude are present',
+        () {
+      final map = {'latitude': 40.7128, 'longitude': 74.0060};
+      final result = map.toLocationResult();
+
+      expect(result.isSuccess, true);
+      expect(result.isError, false);
+      expect(
+        result.match(
+          onSuccess: (location) => location,
+          onError: (error) => null,
+        ),
+        const Location(40.7128, 74.0060),
+      );
+    });
+
+    test('should return LocationResult with Error when latitude is missing',
+        () {
+      final map = {'longitude': 74.0060};
+      final result = map.toLocationResult();
+
+      expect(result.isSuccess, false);
+      expect(result.isError, true);
+      expect(
+        result.match(
+          onSuccess: (location) => null,
+          onError: (error) => error,
+        ),
+        const Error('Latitude or longitude is missing'), 
+      );
+    });
+
+    test('should return LocationResult with Error when longitude is missing',
+        () {
+      final map = {'latitude': 40.7128};
+      final result = map.toLocationResult();
+
+      expect(result.isSuccess, false);
+      expect(result.isError, true);
+      expect(
+        result.match(
+          onSuccess: (location) => null,
+          onError: (error) => error,
+        ),
+        const Error('Latitude or longitude is missing'), 
+      );
+    });
+
+    test(
+        'should return LocationResult with Error when both '
+        'latitude and longitude are missing',
+        () {
+      final map = <String, double>{};
+      final result = map.toLocationResult();
+
+      expect(result.isSuccess, false);
+      expect(result.isError, true);
+      expect(
+        result.match(
+          onSuccess: (location) => null,
+          onError: (error) => error,
+        ),
+        const Error('Latitude or longitude is missing'), 
       );
     });
   });
