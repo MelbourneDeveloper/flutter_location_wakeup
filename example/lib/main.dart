@@ -4,19 +4,33 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:loc/loc.dart';
 
+final messengerStateKey = GlobalKey<ScaffoldMessengerState>();
+
 void main() {
-  runApp(const MyApp());
+  runApp(MaterialApp(
+    theme: ThemeData(useMaterial3: true),
+    scaffoldMessengerKey: messengerStateKey,
+    home: Scaffold(
+      appBar: AppBar(
+        title: const Text('Get Significant Location Changes'),
+      ),
+      body: const Center(
+        child: LocationDisplay(),
+      ),
+    ),
+  ));
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class LocationDisplay extends StatefulWidget {
+  const LocationDisplay({Key? key}) : super(key: key);
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<LocationDisplay> createState() => _LocationDisplayState();
 }
 
-class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+class _LocationDisplayState extends State<LocationDisplay> {
+  String _latitude = 'Unknown Latitude';
+  String _longitude = 'Unknown Longitude';
   final _locPlugin = Loc();
 
   @override
@@ -25,39 +39,52 @@ class _MyAppState extends State<MyApp> {
     initPlatformState();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion =
-          await _locPlugin.getPlatformVersion() ?? 'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
     if (!mounted) return;
 
-    setState(() {
-      _platformVersion = platformVersion;
-    });
+    try {
+      _locPlugin.locationUpdates.listen(
+        (result) {
+          if (!mounted) return;
+          setState(() {
+            if (result is Success) {
+              _latitude = result.value.latitude.toString();
+              _longitude = result.value.longitude.toString();
+            }
+          });
+
+          messengerStateKey.currentState.let(
+            (state) async => state.showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Lat: $_latitude\nLong: $_longitude',
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                backgroundColor: Theme.of(state.context).colorScheme.background,
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                duration: const Duration(seconds: 10),
+                action: SnackBarAction(
+                  label: 'Dismiss',
+                  onPressed: () {},
+                  textColor: Colors.white,
+                ),
+              ),
+            ),
+          );
+        },
+      );
+      await _locPlugin.startMonitoring();
+    } on PlatformException {
+      // Handle exception
+    }
   }
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) =>
+      Text('Lat: $_latitude\nLong: $_longitude');
 }

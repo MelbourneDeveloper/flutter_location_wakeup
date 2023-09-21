@@ -23,7 +23,6 @@ abstract class LocPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
-  }
+  Future<void> startMonitoring();
+  Stream<Map<String, double>> get locationUpdates;
 }
