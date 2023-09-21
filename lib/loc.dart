@@ -12,37 +12,29 @@ extension NullyExtensions<T> on T? {
   }
 }
 
-abstract class Result<T, E> {
-  const Result();
+class Result {
+  Result(this._location) : _error = null;
+  Result.error(this._error) : _location = null;
 
-  bool get isSuccess => this is Success<T, E>;
-  bool get isError => this is Error<T, E>;
+  final Location? _location;
+  final Error? _error;
 
-  T get value {
-    if (this is Success<T, E>) {
-      return (this as Success<T, E>).value;
-    }
-    throw StateError('value called on Result in Error state');
-  }
+  bool get isSuccess => _location != null;
+  bool get isError => _error != null;
 
-  E get error {
-    if (this is Error<T, E>) {
-      return (this as Error<T, E>).error;
-    }
-    throw StateError('error called on Result in Success state');
-  }
+  T match<T>({
+    required T Function(Location location) onSuccess,
+    required T Function(Error error) onError,
+  }) =>
+      isSuccess ? onSuccess(_location!) : onError(_error!);
+
+  Location locationOr(Location Function(Error error) onError) =>
+      isSuccess ? _location! : onError(_error!);
 }
 
-class Success<T, E> extends Result<T, E> {
-  Success(this.value);
-  @override
-  final T value;
-}
-
-class Error<T, E> extends Result<T, E> {
-  Error(this.error);
-  @override
-  final E error;
+class Error {
+  Error(this.message);
+  final String message;
 }
 
 class Location {
@@ -54,7 +46,6 @@ class Location {
 class Loc {
   Future<void> startMonitoring() => LocPlatform.instance.startMonitoring();
 
-  Stream<Result<Location, String>> get locationUpdates =>
-      LocPlatform.instance.locationUpdates
-          .map((map) => Success(Location(map['latitude']!, map['longitude']!)));
+  Stream<Result> get locationUpdates => LocPlatform.instance.locationUpdates
+      .map((map) => Result(Location(map['latitude']!, map['longitude']!)));
 }

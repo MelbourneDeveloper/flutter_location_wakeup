@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -29,8 +31,7 @@ class LocationDisplay extends StatefulWidget {
 }
 
 class _LocationDisplayState extends State<LocationDisplay> {
-  String _latitude = 'Unknown Latitude';
-  String _longitude = 'Unknown Longitude';
+  String _display = 'Unknown';
   final _locPlugin = Loc();
 
   @override
@@ -46,36 +47,8 @@ class _LocationDisplayState extends State<LocationDisplay> {
       _locPlugin.locationUpdates.listen(
         (result) {
           if (!mounted) return;
-          setState(() {
-            if (result is Success) {
-              _latitude = result.value.latitude.toString();
-              _longitude = result.value.longitude.toString();
-            }
-          });
 
-          messengerStateKey.currentState.let(
-            (state) async => state.showSnackBar(
-              SnackBar(
-                content: Text(
-                  'Lat: $_latitude\nLong: $_longitude',
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                backgroundColor: Theme.of(state.context).colorScheme.background,
-                behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                duration: const Duration(seconds: 10),
-                action: SnackBarAction(
-                  label: 'Dismiss',
-                  onPressed: () {},
-                  textColor: Colors.white,
-                ),
-              ),
-            ),
-          );
+          setState(() => bing(result));
         },
       );
       await _locPlugin.startMonitoring();
@@ -84,7 +57,35 @@ class _LocationDisplayState extends State<LocationDisplay> {
     }
   }
 
+  void bing(Result result) {
+    _display = result.match(
+        onSuccess: (l) => 'Lat: ${l.latitude}\nLong: ${l.longitude}',
+        onError: (e) => e.message);
+
+    messengerStateKey.currentState.let(
+      (state) async => state.showSnackBar(
+        SnackBar(
+          content: Text(
+            _display,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: Theme.of(state.context).colorScheme.background,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          duration: const Duration(seconds: 10),
+          action: SnackBarAction(
+            label: 'Dismiss',
+            onPressed: () {},
+            textColor: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
-  Widget build(BuildContext context) =>
-      Text('Lat: $_latitude\nLong: $_longitude');
+  Widget build(BuildContext context) => Text(_display);
 }
