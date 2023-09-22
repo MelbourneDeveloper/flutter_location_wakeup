@@ -28,9 +28,13 @@ class LocationResult {
       isSuccess ? onSuccess(_location!) : onError(_error!);
 
   ///Allows you to access the location if it is successful or
-  ///return a default value if it is not
+  ///to replace the location with a different value based on an error
   Location locationOr(Location Function(Error error) onError) =>
       isSuccess ? _location! : onError(_error!);
+
+  /// Returns the location if it's successful, or an empty location if it's an
+  /// error.
+  Location get locationOrEmpty => _location ?? Location.empty;
 
   @override
   bool operator ==(Object other) {
