@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:flutter_location_wakeup/location_wakeup.dart';
-import 'package:flutter_location_wakeup/model.dart';
-import 'package:flutter_location_wakeup/extensions.dart';
+import 'package:flutter_location_wakeup/flutter_location_wakeup.dart';
+
 
 final messengerStateKey = GlobalKey<ScaffoldMessengerState>();
 
 void main() {
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     theme: ThemeData(useMaterial3: true),
     scaffoldMessengerKey: messengerStateKey,
     home: Scaffold(

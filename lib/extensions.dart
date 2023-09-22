@@ -1,3 +1,6 @@
+///The flutter_location_wakeup library
+library flutter_location_wakeup;
+
 import 'package:flutter_location_wakeup/model.dart';
 
 /// Extensions for nullable types

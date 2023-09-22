@@ -1,3 +1,6 @@
+///The flutter_location_wakeup library
+library flutter_location_wakeup;
+
 ///The result of a location change from the device
 class LocationResult {
   ///Successful result
