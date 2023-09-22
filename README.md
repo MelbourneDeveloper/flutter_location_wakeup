@@ -1,14 +1,14 @@
 # flutter_location_wakeup
 
-Listens for significant location changes the device and wakes it up when they arrive
+`flutter_location_wakeup` is a Flutter plugin designed to listen for significant location changes on the device. When the changes are detected, the foreground app wakes up, or stays awake from suspension. 
 
-Currently only supports iOS. Android version pending...
+The plugin's iOS implementation predominantly relies on Apple's [`startMonitoringSignificantLocationChanges`](https://developer.apple.com/documentation/corelocation/cllocationmanager/1423531-startmonitoringsignificantlocati) Swift API. For an in-depth understanding of its functionality, refer to Apple's official documentation. As of now, the plugin offers support exclusively for iOS, with Android support in the pipeline.
 
 ## Getting Started
 
-### iOS
+### iOS Configuration
 
-Add these to your `Info.plist`:
+To set up the plugin for iOS, you need to request location permissions. Add the following keys to your Info.plist to describe the reasons for using the location:
 
 ```xml
 	<key>NSLocationWhenInUseUsageDescription</key>
@@ -19,7 +19,9 @@ Add these to your `Info.plist`:
 	<string>We need your location for...</string>
 ```
 
-Check out the full working sample in the example folder. This is an example of a stateful widget to listen for location updates and display them in a `SnackBar`.
+### Sample Usage
+
+For a comprehensive demonstration, refer to the example provided in the `example` directory. Below is a snippet showcasing a stateful widget that listens for location updates and presents them using a `SnackBar`:
 
 ```dart
 class _LocationDisplayState extends State<LocationDisplay> {
@@ -84,7 +86,3 @@ class _LocationDisplayState extends State<LocationDisplay> {
   Widget build(BuildContext context) => Text(_display);
 }
 ```
-
-## More Info
-
-The iOS implementation makes heavy use of the [`startMonitoringSignificantLocationChanges`](https://developer.apple.com/documentation/corelocation/cllocationmanager/1423531-startmonitoringsignificantlocati) Swift API. You can read about how this works on Apple's website.

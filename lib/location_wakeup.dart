@@ -1,5 +1,3 @@
-///The flutter_location_wakeup library
-library flutter_location_wakeup;
 
 import 'package:flutter_location_wakeup/extensions.dart';
 import 'package:flutter_location_wakeup/location_wakeup_platform.dart';
