@@ -52,6 +52,7 @@ class LocationResult {
 enum ErrorCode {
   ///The app doesn't have permission to access location
   locationPermissionDenied,
+
   ///No known information from the device about what went wrong
   unknown,
 }
