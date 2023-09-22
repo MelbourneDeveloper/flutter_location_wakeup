@@ -1,4 +1,3 @@
-
 import 'package:flutter_location_wakeup/flutter_location_wakeup.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -7,9 +6,14 @@ void main() {
     const location1 =
         Location(40.7128, 74.0060); // Replace with your actual Location class
     const location2 = Location(34.0522, 118.2437);
-    const error1 =
-        Error('Something went wrong'); // Replace with your actual Error class
-    const error2 = Error('Another issue');
+    const error1 = Error(
+      message: 'Something went wrong',
+      errorCode: ErrorCode.unknown,
+    );
+    const error2 = Error(
+      message: 'Another issue',
+      errorCode: ErrorCode.unknown,
+    );
 
     test('should be equal if both location and error are the same', () {
       final result1 = LocationResult(location1);
@@ -110,7 +114,10 @@ void main() {
           onSuccess: (location) => null,
           onError: (error) => error,
         ),
-        const Error('Latitude or longitude is missing'),
+        const Error(
+          message: 'Latitude or longitude is missing',
+          errorCode: ErrorCode.unknown,
+        ),
       );
     });
 
@@ -126,7 +133,10 @@ void main() {
           onSuccess: (location) => null,
           onError: (error) => error,
         ),
-        const Error('Latitude or longitude is missing'),
+        const Error(
+          message: 'Latitude or longitude is missing',
+          errorCode: ErrorCode.unknown,
+        ),
       );
     });
 
@@ -143,7 +153,10 @@ void main() {
           onSuccess: (location) => null,
           onError: (error) => error,
         ),
-        const Error('Latitude or longitude is missing'),
+        const Error(
+          message: 'Latitude or longitude is missing',
+          errorCode: ErrorCode.unknown,
+        ),
       );
     });
   });

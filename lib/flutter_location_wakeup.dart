@@ -1,5 +1,4 @@
-
-///Listens for significant location changes on the device and wakes it up when 
+///Listens for significant location changes on the device and wakes it up when
 ///they arrive
 library flutter_location_wakeup;
 

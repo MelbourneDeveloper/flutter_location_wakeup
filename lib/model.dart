@@ -1,11 +1,14 @@
-
 ///The result of a location change from the device
 class LocationResult {
   ///Successful result
-  LocationResult(this._location) : _error = null;
+  LocationResult(Location location)
+      : _location = location,
+        _error = null;
 
   ///Error from the device
-  LocationResult.error(this._error) : _location = null;
+  LocationResult.error(Error error)
+      : _error = error,
+        _location = null;
 
   final Location? _location;
   final Error? _error;
@@ -45,26 +48,42 @@ class LocationResult {
   String toString() => 'LocationResult(_location: $_location, _error: $_error)';
 }
 
+enum ErrorCode {
+  locationPermissionDenied,
+  unknown,
+}
+
 ///Represents an error from the device in regards to location
 class Error {
-  ///Creates an error with the given message
-  const Error(this.message);
+  ///Creates an error with the given message and error code
+  const Error({required this.message, required this.errorCode});
 
   ///The textual message of the error
   final String message;
+
+  ///The error code representing the type of error
+  final ErrorCode errorCode;
+
+  ///Represents an unknown error with no information from the device
+  static const unknown = Error(
+    message: 'Unknown',
+    errorCode: ErrorCode.unknown,
+  );
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is Error && other.message == message;
+    return other is Error &&
+        other.message == message &&
+        other.errorCode == errorCode;
   }
 
   @override
-  int get hashCode => message.hashCode;
+  int get hashCode => message.hashCode ^ errorCode.hashCode;
 
   @override
-  String toString() => 'Error(message: $message)';
+  String toString() => 'Error(message: $message, errorCode: $errorCode)';
 }
 
 ///Represents a location on earth by latitude and longitude
@@ -77,6 +96,9 @@ class Location {
 
   ///The longitude of the location
   final double longitude;
+
+  ///Represents an empty or undefined location
+  static const empty = Location(double.nan, double.nan);
 
   @override
   bool operator ==(Object other) {

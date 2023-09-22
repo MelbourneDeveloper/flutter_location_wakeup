@@ -1,4 +1,3 @@
-
 import 'package:flutter_location_wakeup/method_channel_location_wakeup.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 

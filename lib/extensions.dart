@@ -26,7 +26,10 @@ LocationResult toLocationResult(dynamic platformData) {
     return latitude is double && longitude is double
         ? LocationResult(Location(latitude, longitude))
         : LocationResult.error(
-            const Error('Latitude or longitude is missing'),
+            const Error(
+              message: 'Latitude or longitude is missing',
+              errorCode: ErrorCode.unknown,
+            ),
           );
   }
 
