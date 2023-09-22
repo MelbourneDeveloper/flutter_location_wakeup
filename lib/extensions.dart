@@ -17,14 +17,13 @@ extension NullyExtensions<T> on T? {
 ///to the result object
 // ignore: avoid_annotating_with_dynamic
 LocationResult toLocationResult(dynamic platformData) {
+//Why doesnt this work as an extension
 
-//Why doesnt this work as 
-
-  if (platformData is Map<String, double>) {
+  if (platformData is Map) {
     final latitude = platformData['latitude'];
     final longitude = platformData['longitude'];
 
-    return latitude != null && longitude != null
+    return latitude is double && longitude is double
         ? LocationResult(Location(latitude, longitude))
         : LocationResult.error(
             const Error('Latitude or longitude is missing'),
