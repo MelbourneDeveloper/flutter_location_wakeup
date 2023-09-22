@@ -17,7 +17,7 @@ public class LocPlugin: NSObject, FlutterPlugin, FlutterStreamHandler, CLLocatio
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
-       case "startMonitoring":
+        case "startMonitoring":
             startMonitoring()
             result(nil)
         default:
@@ -48,6 +48,23 @@ public class LocPlugin: NSObject, FlutterPlugin, FlutterStreamHandler, CLLocatio
                 "latitude": location.coordinate.latitude,
                 "longitude": location.coordinate.longitude
             ])
+        }
+    }
+    
+    public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        eventSink?(FlutterError(code: "LOCATION_ERROR", message: error.localizedDescription, details: nil))
+    }
+    
+    public func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        switch status {
+        case .restricted, .denied:
+            eventSink?(FlutterError(code: "LOCATION_PERMISSION_DENIED", message: "Location permission denied", details: nil))
+        case .authorizedAlways, .authorizedWhenInUse:
+            break
+        case .notDetermined:
+            manager.requestAlwaysAuthorization()
+        @unknown default:
+            eventSink?(FlutterError(code: "UNKNOWN_LOCATION_ERROR", message: "Unknown location error occurred", details: nil))
         }
     }
 }
