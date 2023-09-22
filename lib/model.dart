@@ -48,8 +48,11 @@ class LocationResult {
   String toString() => 'LocationResult(_location: $_location, _error: $_error)';
 }
 
+///Represents the type of error that occurred at the device level
 enum ErrorCode {
+  ///The app doesn't have permission to access location
   locationPermissionDenied,
+  ///No known information from the device about what went wrong
   unknown,
 }
 
