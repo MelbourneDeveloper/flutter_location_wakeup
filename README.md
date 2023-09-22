@@ -6,9 +6,7 @@ Currently only supports iOS. Android version pending...
 
 ## Getting Started
 
-This is an example that you can use in the `State` of a stateful widget to listen for location updates and display them in a `SnackBar`:
-
-## iOS
+### iOS
 
 Add these to your `Info.plist`:
 
@@ -21,11 +19,24 @@ Add these to your `Info.plist`:
 	<string>We need your location for...</string>
 ```
 
+Check out the full working sample in the example folder. This is an example of a stateful widget to listen for location updates and display them in a `SnackBar`.
+
 ```dart
+class _LocationDisplayState extends State<LocationDisplay> {
+  String _display = 'Unknown';
+  final _locationWakeup = LocationWakeup();
+
+  @override
+  void initState() {
+    super.initState();
+    startListening();
+  }
+
   Future<void> startListening() async {
     if (!mounted) return;
 
     try {
+      //Start listening to the stream before initizaling the plugin
       _locationWakeup.locationUpdates.listen(
         (result) {
           if (!mounted) return;
@@ -33,6 +44,7 @@ Add these to your `Info.plist`:
           setState(() => onLocationResultChange(result));
         },
       );
+      //Initialize the plugin
       await _locationWakeup.startMonitoring();
     } on PlatformException {
       // Handle exception
@@ -67,4 +79,12 @@ Add these to your `Info.plist`:
       ),
     );
   }
+
+  @override
+  Widget build(BuildContext context) => Text(_display);
+}
 ```
+
+## More Info
+
+The iOS implementation makes heavy use of the [`startMonitoringSignificantLocationChanges`](https://developer.apple.com/documentation/corelocation/cllocationmanager/1423531-startmonitoringsignificantlocati) Swift API. You can read about how this works on Apple's website.
