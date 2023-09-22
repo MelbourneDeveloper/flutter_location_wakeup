@@ -24,5 +24,5 @@ abstract class LocationWakeupPlatform extends PlatformInterface {
   Future<void> startMonitoring();
 
   ///A stream of location changes
-  Stream<Map<String, double>> get locationUpdates;
+  Stream<dynamic> get locationUpdates;
 }

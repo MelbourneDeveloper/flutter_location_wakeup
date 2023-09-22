@@ -1,4 +1,3 @@
-
 import 'package:flutter_location_wakeup/model.dart';
 
 /// Extensions for nullable types
@@ -14,15 +13,23 @@ extension NullyExtensions<T> on T? {
   }
 }
 
-/// Extensions for [Map<String, double>]
-extension LocationExtensions on Map<String, double> {
-  ///Converts a map of latitude and longitude to a [LocationResult]
-  LocationResult toLocationResult() {
-    final latitude = this['latitude'];
-    final longitude = this['longitude'];
+///Converts the platform data, possibly including the lat/log [LocationResult]
+///to the result object
+// ignore: avoid_annotating_with_dynamic
+LocationResult toLocationResult(dynamic platformData) {
+
+//Why doesnt this work as 
+
+  if (platformData is Map<String, double>) {
+    final latitude = platformData['latitude'];
+    final longitude = platformData['longitude'];
 
     return latitude != null && longitude != null
         ? LocationResult(Location(latitude, longitude))
-        : LocationResult.error(const Error('Latitude or longitude is missing'));
+        : LocationResult.error(
+            const Error('Latitude or longitude is missing'),
+          );
   }
+
+  throw UnimplementedError();
 }

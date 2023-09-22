@@ -85,7 +85,7 @@ void main() {
         'should return LocationResult with Location when both '
         'latitude and longitude are present', () {
       final map = {'latitude': 40.7128, 'longitude': 74.0060};
-      final result = map.toLocationResult();
+      final result = toLocationResult(map);
 
       expect(result.isSuccess, true);
       expect(result.isError, false);
@@ -101,7 +101,7 @@ void main() {
     test('should return LocationResult with Error when latitude is missing',
         () {
       final map = {'longitude': 74.0060};
-      final result = map.toLocationResult();
+      final result = toLocationResult(map);
 
       expect(result.isSuccess, false);
       expect(result.isError, true);
@@ -117,7 +117,7 @@ void main() {
     test('should return LocationResult with Error when longitude is missing',
         () {
       final map = {'latitude': 40.7128};
-      final result = map.toLocationResult();
+      final result = toLocationResult(map);
 
       expect(result.isSuccess, false);
       expect(result.isError, true);
@@ -134,7 +134,7 @@ void main() {
         'should return LocationResult with Error when both '
         'latitude and longitude are missing', () {
       final map = <String, double>{};
-      final result = map.toLocationResult();
+      final result = toLocationResult(map);
 
       expect(result.isSuccess, false);
       expect(result.isError, true);
