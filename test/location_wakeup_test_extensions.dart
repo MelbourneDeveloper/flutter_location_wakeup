@@ -9,7 +9,8 @@ extension LocationWakeupTesterExtensions on WidgetTester {
   Future<
       (
         LocationWakeup,
-        Future<void> Function(Map<String, dynamic>),
+        // ignore: avoid_annotating_with_dynamic
+        Future<void> Function(dynamic),
       )> initLocationWakeupWithMockChannel(
     Future<Object?>? Function(MethodCall) methodHandler,
   ) async {
@@ -20,8 +21,7 @@ extension LocationWakeupTesterExtensions on WidgetTester {
     //Create a sender that sends fake events to the EventChannel that mimic
     //the events that the device platform sends over the EventChannel
 
-    final sendToEventChannel =
-        getEventChannelSender<LocationWakeup, LocationResult>(
+    final sendToEventChannel = getEventChannelSender(
       methodChannel: methodChannelLocationWakeup.channel,
       eventChannel: methodChannelLocationWakeup.eventChannel,
       methodHandler: methodHandler,

@@ -57,16 +57,20 @@ void main() {
     );
 
     // Simulate a permission error from iOS
-    final permissionErrorData = <String, dynamic>{
-      'errorCode': locationPermissionDeniedErrorCode,
-      'message': 'Location permission denied',
-      'details': {
-        'permissionStatus': 'denied',
+    final platformException = PlatformException(
+      code: locationPermissionDeniedErrorCode,
+      message: 'Location permission denied',
+      details: <String, dynamic>{
+        'errorCode': locationPermissionDeniedErrorCode,
+        'message': 'Location permission denied',
+        'details': {
+          'permissionStatus': 'denied',
+        },
       },
-    };
+    );
 
     // Send the error event to the EventChannel (Mimics the Swift code)
-    await sendToEventChannel(permissionErrorData);
+    await sendToEventChannel(platformException);
 
     // Wait for the first LocationResult on the stream
     final locationResult = await locationWakeup.locationUpdates.first;
