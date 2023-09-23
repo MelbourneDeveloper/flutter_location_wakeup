@@ -43,6 +43,7 @@ class _LocationDisplayState extends State<LocationDisplay> {
     if (!mounted) return;
 
     try {
+      //Start listening before initializing
       _locationWakeup.locationUpdates.listen(
         (result) {
           if (!mounted) return;
@@ -50,6 +51,7 @@ class _LocationDisplayState extends State<LocationDisplay> {
           setState(() => onLocationResultChange(result));
         },
       );
+      //Initialize
       await _locationWakeup.startMonitoring();
     } on PlatformException {
       // Handle exception

@@ -3,7 +3,7 @@ description: Listens for significant location changes on the device and wakes it
 version: 0.4.0-beta
 repository: https://github.com/MelbourneDeveloper/flutter_location_wakeup
 
-environment:
+environment:/
   sdk: '>=3.1.2 <4.0.0'
   flutter: '>=3.13.5'
 

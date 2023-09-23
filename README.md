@@ -46,7 +46,7 @@ class _LocationDisplayState extends State<LocationDisplay> {
     if (!mounted) return;
 
     try {
-      //Start listening to the stream before initizaling the plugin
+      //Start listening before initializing
       _locationWakeup.locationUpdates.listen(
         (result) {
           if (!mounted) return;
@@ -54,7 +54,7 @@ class _LocationDisplayState extends State<LocationDisplay> {
           setState(() => onLocationResultChange(result));
         },
       );
-      //Initialize the plugin
+      //Initialize
       await _locationWakeup.startMonitoring();
     } on PlatformException {
       // Handle exception
@@ -63,7 +63,17 @@ class _LocationDisplayState extends State<LocationDisplay> {
 
   void onLocationResultChange(LocationResult result) {
     _display = result.match(
-        onSuccess: (l) => 'Lat: ${l.latitude}\nLong: ${l.longitude}',
+        onSuccess: (l) => '''
+Lat: ${l.latitude}
+Long: ${l.longitude}
+Altitude: ${l.altitude}
+Horizontal Accuracy: ${l.horizontalAccuracy}
+Vertical Accuracy: ${l.verticalAccuracy}
+Course: ${l.course}
+Speed: ${l.speed}
+Timestamp: ${l.timestamp}
+Floor Level: ${l.floorLevel}
+''',
         onError: (e) => e.message);
 
     messengerStateKey.currentState.let(
