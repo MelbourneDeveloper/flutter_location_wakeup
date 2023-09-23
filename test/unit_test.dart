@@ -15,12 +15,30 @@ void main() {
     );
 
     test('equality and hash code tests', () {
-      final result1 = LocationResult(location1);
-      final result2 = LocationResult(location1);
-      final result3 = LocationResult.error(error1);
-      final result4 = LocationResult.error(error1);
-      final result5 = LocationResult(location2);
-      final result6 = LocationResult.error(error2);
+      final result1 = LocationResult(
+        location1,
+        permissionStatus: PermissionStatus.notSpecified,
+      );
+      final result2 = LocationResult(
+        location1,
+        permissionStatus: PermissionStatus.notSpecified,
+      );
+      final result3 = LocationResult.error(
+        error1,
+        permissionStatus: PermissionStatus.notSpecified,
+      );
+      final result4 = LocationResult.error(
+        error1,
+        permissionStatus: PermissionStatus.notSpecified,
+      );
+      final result5 = LocationResult(
+        location2,
+        permissionStatus: PermissionStatus.notSpecified,
+      );
+      final result6 = LocationResult.error(
+        error2,
+        permissionStatus: PermissionStatus.notSpecified,
+      );
 
       expect(result1, result2);
       expect(result3, result4);
@@ -35,8 +53,14 @@ void main() {
     });
 
     test('match() and locationOr() tests', () {
-      final result1 = LocationResult(location1);
-      final result2 = LocationResult.error(error1);
+      final result1 = LocationResult(
+        location1,
+        permissionStatus: PermissionStatus.notSpecified,
+      );
+      final result2 = LocationResult.error(
+        error1,
+        permissionStatus: PermissionStatus.notSpecified,
+      );
 
       expect(
         result1.match(onSuccess: (l) => 'Success', onError: (e) => 'Error'),
@@ -48,6 +72,7 @@ void main() {
       );
       expect(result1.locationOr((e) => location2), location1);
       expect(result2.locationOr((e) => location2), location2);
+      expect(result1.permissionStatus, PermissionStatus.notSpecified);
     });
   });
 
