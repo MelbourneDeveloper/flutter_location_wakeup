@@ -3,14 +3,14 @@ class LocationResult {
   ///Successful result
   LocationResult(
     Location location, {
-    this.permissionStatus = PermissionStatus.notSpecified,
+    required this.permissionStatus,
   })  : _location = location,
         _error = null;
 
   ///Error from the device
   LocationResult.error(
     Error error, {
-    this.permissionStatus = PermissionStatus.notSpecified,
+    required this.permissionStatus,
   })  : _error = error,
         _location = null;
 

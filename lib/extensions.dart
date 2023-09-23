@@ -1,4 +1,19 @@
-import 'package:flutter_location_wakeup/model.dart';
+import 'package:flutter_location_wakeup/flutter_location_wakeup.dart';
+
+///Extensions for the [PermissionStatus] enum
+extension PermissionsOnStringExtension on String? {
+  ///Converts the device level permission status to the plugin level permission
+  PermissionStatus toPermissionStatus() => switch (this) {
+        null => PermissionStatus.notSpecified,
+        'granted' => PermissionStatus.granted,
+        'denied' => PermissionStatus.denied,
+        'permanentlyDenied' => PermissionStatus.permanentlyDenied,
+        'notDetermined' => PermissionStatus.notDetermined,
+        'restricted' => PermissionStatus.restricted,
+        'limited' => PermissionStatus.limited,
+        _ => PermissionStatus.notSpecified,
+      };
+}
 
 /// Extensions for nullable types
 extension NullyExtensions<T> on T? {
@@ -25,14 +40,19 @@ LocationResult toLocationResult(dynamic platformData) {
   if (platformData is Map) {
     final latitude = platformData['latitude'];
     final longitude = platformData['longitude'];
+    final permissionStatusString = platformData['permissionStatus'] as String?;
 
     return latitude is double && longitude is double
-        ? LocationResult(Location(latitude, longitude))
+        ? LocationResult(
+            Location(latitude, longitude),
+            permissionStatus: permissionStatusString.toPermissionStatus(),
+          )
         : LocationResult.error(
             const Error(
               message: 'Latitude or longitude is missing',
               errorCode: ErrorCode.unknown,
             ),
+            permissionStatus: permissionStatusString.toPermissionStatus(),
           );
   }
 

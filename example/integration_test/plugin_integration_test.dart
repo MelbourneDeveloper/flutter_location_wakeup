@@ -16,6 +16,7 @@ void main() {
     final location = result.locationOr((e) => const Location(0, 0));
     expect(location.latitude, isNot(0));
     expect(location.longitude, isNot(0));
+    expect(result.permissionStatus, PermissionStatus.granted);
   });
 
   testWidgets('Monitor And Wait For First Permission Error',

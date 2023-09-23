@@ -47,24 +47,18 @@ void streamError(
   dynamic error,
 ) {
   if (error is PlatformException) {
+    String? permissionStatusString;
+    if (error.details is Map) {
+      final details = error.details as Map;
+      permissionStatusString = details['permissionStatus'] as String?;
+    }
     if (error.code == locationPermissionDeniedErrorCode) {
       final locationResult = LocationResult.error(
         Error(
           message: error.message ?? 'Unknown permission related error',
           errorCode: ErrorCode.locationPermissionDenied,
         ),
-        permissionStatus: error.details is Map
-            // ignore: avoid_dynamic_calls
-            ? switch (error.details['permissionStatus']) {
-                'granted' => PermissionStatus.granted,
-                'denied' => PermissionStatus.denied,
-                'permanentlyDenied' => PermissionStatus.permanentlyDenied,
-                'notDetermined' => PermissionStatus.notDetermined,
-                'restricted' => PermissionStatus.restricted,
-                'limited' => PermissionStatus.limited,
-                _ => PermissionStatus.notSpecified,
-              }
-            : PermissionStatus.notSpecified,
+        permissionStatus: permissionStatusString.toPermissionStatus(),
       );
 
       streamController.add(locationResult);
@@ -72,5 +66,10 @@ void streamError(
     }
   }
 
-  streamController.add(LocationResult.error(Error.unknown));
+  streamController.add(
+    LocationResult.error(
+      Error.unknown,
+      permissionStatus: PermissionStatus.notSpecified,
+    ),
+  );
 }

@@ -44,13 +44,47 @@ public class LocPlugin: NSObject, FlutterPlugin, FlutterStreamHandler, CLLocatio
     
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {
-            eventSink?([
+            let status = CLLocationManager.authorizationStatus()
+            let permissionStatus = stringFromAuthorizationStatus(status: status)
+            
+            var locationData: [String: Any] = [
                 "latitude": location.coordinate.latitude,
-                "longitude": location.coordinate.longitude
-            ])
+                "longitude": location.coordinate.longitude,
+                "altitude": location.altitude,
+                "horizontalAccuracy": location.horizontalAccuracy,
+                "verticalAccuracy": location.verticalAccuracy,
+                "course": location.course,
+                "speed": location.speed,
+                "timestamp": location.timestamp.timeIntervalSince1970, // Convert to UNIX timestamp
+                "permissionStatus": permissionStatus
+            ]
+            
+            if let floor = location.floor {
+                locationData["floorLevel"] = floor.level
+            }
+            
+            eventSink?(locationData)
         }
     }
-    
+
+    func stringFromAuthorizationStatus(status: CLAuthorizationStatus) -> String {
+        switch status {
+        case .authorizedAlways:
+            return "granted"
+        case .authorizedWhenInUse:
+            //Not differentiating between when in use and always
+            return "granted"
+        case .denied:
+            return "denied"
+        case .restricted:
+            return "restricted"
+        case .notDetermined:
+            return "notDetermined"
+        @unknown default:
+            return "unknown"
+        }
+    }
+
     public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         eventSink?(FlutterError(code: "LOCATION_ERROR", message: error.localizedDescription, details: nil))
     }
