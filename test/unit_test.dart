@@ -128,15 +128,16 @@ void main() {
       expect(location.course, 180.0);
       expect(location.speed, 15.0);
       expect(
-          location.timestamp,
-          DateTime(
-            2023,
-            03,
-            1,
-            16,
-            30,
-            52,
-          ),);
+        location.timestamp,
+        DateTime(
+          2023,
+          03,
+          1,
+          16,
+          30,
+          52,
+        ),
+      );
       expect(location.floorLevel, 2);
       expect(result.permissionStatus, PermissionStatus.granted);
       expect(result.isSuccess, true);
@@ -205,7 +206,7 @@ void main() {
       );
 
       // Scenario 3: Neither latitude nor longitude is provided
-      final dataWithoutLatLong = {};
+      final dataWithoutLatLong = <String, dynamic>{};
       final result3 = toLocationResult(dataWithoutLatLong);
       expect(result3.isError, true);
       expect(

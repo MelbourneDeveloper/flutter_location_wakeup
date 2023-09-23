@@ -6,3 +6,4 @@ analyzer:
     avoid_equals_and_hash_code_on_mutable_classes: ignore
     inference_failure_on_untyped_parameter: error
     unreachable_switch_case: error
+    inference_failure_on_collection_literal: error
