@@ -3,8 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('LocationResult', () {
-    const location1 =
-        Location(40.7128, 74.0060); // Replace with your actual Location class
+    const location1 = Location(40.7128, 74.0060);
     const location2 = Location(34.0522, 118.2437);
     const error1 = Error(
       message: 'Something went wrong',
@@ -15,148 +14,90 @@ void main() {
       errorCode: ErrorCode.unknown,
     );
 
-    test('should be equal if both location and error are the same', () {
+    test('equality and hash code tests', () {
       final result1 = LocationResult(location1);
       final result2 = LocationResult(location1);
       final result3 = LocationResult.error(error1);
       final result4 = LocationResult.error(error1);
+      final result5 = LocationResult(location2);
+      final result6 = LocationResult.error(error2);
 
       expect(result1, result2);
       expect(result3, result4);
-    });
-
-    test('should not be equal if either location or error is different', () {
-      final result1 = LocationResult(location1);
-      final result2 = LocationResult(location2);
-      final result3 = LocationResult.error(error1);
-      final result4 = LocationResult.error(error2);
-
-      expect(result1, isNot(result2));
-      expect(result3, isNot(result4));
-    });
-
-    test(
-        'should have the same hash code if both '
-        'location and error are the same', () {
-      final result1 = LocationResult(location1);
-      final result2 = LocationResult(location1);
-      final result3 = LocationResult.error(error1);
-      final result4 = LocationResult.error(error1);
-
+      expect(result1, isNot(result5));
+      expect(result3, isNot(result6));
       expect(result1.hashCode, result2.hashCode);
       expect(result3.hashCode, result4.hashCode);
     });
 
-    test('should return the correct value from match()', () {
+    test('match() and locationOr() tests', () {
       final result1 = LocationResult(location1);
       final result2 = LocationResult.error(error1);
 
       expect(
-        result1.match(
-          onSuccess: (location) => 'Success',
-          onError: (error) => 'Error',
-        ),
+        result1.match(onSuccess: (l) => 'Success', onError: (e) => 'Error'),
         'Success',
       );
-
       expect(
-        result2.match(
-          onSuccess: (location) => 'Success',
-          onError: (error) => 'Error',
-        ),
+        result2.match(onSuccess: (l) => 'Success', onError: (e) => 'Error'),
         'Error',
       );
-    });
-
-    test('should return the correct value from locationOr()', () {
-      final result1 = LocationResult(location1);
-      final result2 = LocationResult.error(error1);
-
-      expect(
-        result1.locationOr((error) => location2),
-        location1,
-      );
-
-      expect(
-        result2.locationOr((error) => location2),
-        location2,
-      );
+      expect(result1.locationOr((e) => location2), location1);
+      expect(result2.locationOr((e) => location2), location2);
     });
   });
 
   group('LocationExtensions', () {
-    test(
-        'should return LocationResult with Location when both '
-        'latitude and longitude are present', () {
-      final map = {'latitude': 40.7128, 'longitude': 74.0060};
-      final result = toLocationResult(map);
+    const expectedError = Error(
+      message: 'Latitude or longitude is missing',
+      errorCode: ErrorCode.unknown,
+    );
+
+    test('toLocationResult with both latitude and longitude', () {
+      final mapWithBoth = {'latitude': 40.7128, 'longitude': 74.0060};
+      final result = toLocationResult(mapWithBoth);
 
       expect(result.isSuccess, true);
       expect(result.isError, false);
       expect(
-        result.match(
-          onSuccess: (location) => location,
-          onError: (error) => null,
-        ),
+        result.match(onSuccess: (l) => l, onError: (e) => null),
         const Location(40.7128, 74.0060),
       );
     });
 
-    test('should return LocationResult with Error when latitude is missing',
-        () {
-      final map = {'longitude': 74.0060};
-      final result = toLocationResult(map);
+    test('toLocationResult with missing latitude', () {
+      final mapWithLongitudeOnly = {'longitude': 74.0060};
+      final result = toLocationResult(mapWithLongitudeOnly);
 
       expect(result.isSuccess, false);
       expect(result.isError, true);
       expect(
-        result.match(
-          onSuccess: (location) => null,
-          onError: (error) => error,
-        ),
-        const Error(
-          message: 'Latitude or longitude is missing',
-          errorCode: ErrorCode.unknown,
-        ),
+        result.match(onSuccess: (l) => null, onError: (e) => e),
+        expectedError,
       );
     });
 
-    test('should return LocationResult with Error when longitude is missing',
-        () {
-      final map = {'latitude': 40.7128};
-      final result = toLocationResult(map);
+    test('toLocationResult with missing longitude', () {
+      final mapWithLatitudeOnly = {'latitude': 40.7128};
+      final result = toLocationResult(mapWithLatitudeOnly);
 
       expect(result.isSuccess, false);
       expect(result.isError, true);
       expect(
-        result.match(
-          onSuccess: (location) => null,
-          onError: (error) => error,
-        ),
-        const Error(
-          message: 'Latitude or longitude is missing',
-          errorCode: ErrorCode.unknown,
-        ),
+        result.match(onSuccess: (l) => null, onError: (e) => e),
+        expectedError,
       );
     });
 
-    test(
-        'should return LocationResult with Error when both '
-        'latitude and longitude are missing', () {
-      final map = <String, double>{};
-      final result = toLocationResult(map);
+    test('toLocationResult with both missing', () {
+      final emptyMap = <String, double>{};
+      final result = toLocationResult(emptyMap);
 
       expect(result.isSuccess, false);
       expect(result.isError, true);
       expect(
-        result.match(
-          onSuccess: (location) => null,
-          onError: (error) => error,
-        ),
-        const Error(
-          message: 'Latitude or longitude is missing',
-          errorCode: ErrorCode.unknown,
-        ),
+        result.match(onSuccess: (l) => null, onError: (e) => e),
+        expectedError,
       );
     });
   });
