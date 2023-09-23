@@ -24,10 +24,10 @@ void main() {
         details: {'permissionStatus': 'denied'},
       );
 
-      streamError(streamController, error);
-
       // Listen to the stream first
       final emittedEvents = streamController.stream.toList();
+
+      streamError(streamController, error);
 
       // Then close the stream
       await streamController.close();
@@ -53,10 +53,10 @@ void main() {
         message: 'Unknown error',
       );
 
-      streamError(streamController, error);
-
       // Listen to the stream first
       final emittedEvents = streamController.stream.toList();
+
+      streamError(streamController, error);
 
       // Then close the stream
       await streamController.close();
@@ -64,7 +64,12 @@ void main() {
       // Now, check the emitted events
       expect(
         await emittedEvents,
-        [LocationResult.error(Error.unknown)],
+        [
+          LocationResult.error(
+            Error.unknown,
+            permissionStatus: PermissionStatus.notSpecified,
+          ),
+        ],
       );
     });
 
@@ -75,7 +80,12 @@ void main() {
 
       expect(
         streamController.stream,
-        emits(LocationResult.error(Error.unknown)),
+        emits(
+          LocationResult.error(
+            Error.unknown,
+            permissionStatus: PermissionStatus.notSpecified,
+          ),
+        ),
       );
     });
   });
