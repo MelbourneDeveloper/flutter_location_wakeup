@@ -4,7 +4,7 @@ import 'package:flutter_location_wakeup/location_wakeup_platform.dart';
 /// An implementation of [LocationWakeupPlatform] that uses method channels.
 class MethodChannelLocationWakeup extends LocationWakeupPlatform {
   final MethodChannel _channel = const MethodChannel('loc');
-  final EventChannel eventChannel = const EventChannel('loc_stream');
+  final EventChannel _eventChannel = const EventChannel('loc_stream');
 
   Stream<dynamic>? _locationUpdates;
 
@@ -13,7 +13,7 @@ class MethodChannelLocationWakeup extends LocationWakeupPlatform {
 
   @override
   Stream<dynamic> get locationUpdates {
-    _locationUpdates ??= eventChannel.receiveBroadcastStream();
+    _locationUpdates ??= _eventChannel.receiveBroadcastStream();
     return _locationUpdates!;
   }
 }

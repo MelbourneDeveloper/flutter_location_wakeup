@@ -2,6 +2,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_location_wakeup/flutter_location_wakeup.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'fake_stream_handler.dart';
+
 void main() {
   testWidgets('Receives events from the event channel', (tester) async {
     var receivedStartMonitoring = false;
@@ -40,38 +42,20 @@ void main() {
     final encodedData =
         const StandardMethodCodec().encodeMethodCall(methodCall);
 
-    final methodChannelLocationWakeup =
-        LocationWakeupPlatform.instance as MethodChannelLocationWakeup;
+    const eventChannel = EventChannel('loc_stream');
 
     final fakeStreamHandler = FakeStreamHandler();
     tester.binding.defaultBinaryMessenger.setMockStreamHandler(
-      methodChannelLocationWakeup.eventChannel,
+      eventChannel,
       fakeStreamHandler,
     );
 
-    await methodChannelLocationWakeup.eventChannel.binaryMessenger
-        .send('loc_stream', encodedData);
+    await eventChannel.binaryMessenger.send('loc_stream', encodedData);
 
-    final events = await plugin.locationUpdates.first;
-
-    expect(
-      events,
-      isNotEmpty,
-    );
+    final locationResult = await plugin.locationUpdates.first;
 
     expect(receivedStartMonitoring, isTrue);
+    expect(locationResult.locationOrEmpty.latitude, locationData['latitude']);
+    expect(locationResult.locationOrEmpty.longitude, locationData['longitude']);
   });
-}
-
-class FakeStreamHandler extends MockStreamHandler {
-  @override
-  void onCancel(Object? arguments) {
-    // TODO: implement onCancel
-  }
-
-  @override
-  void onListen(Object? arguments, MockStreamHandlerEventSink events) {
-    events.success(arguments);
-    // TODO: implement onListen
-  }
 }
