@@ -86,7 +86,6 @@ void main() {
 
     expect(
       locationResult.errorOrEmpty().message,
-      // ignore: avoid_dynamic_calls
       errorDetails['message'],
     );
   });
