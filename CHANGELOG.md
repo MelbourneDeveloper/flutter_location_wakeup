@@ -12,3 +12,6 @@
 * Add extra information to LocationResult: altitude,horizontalAccuracy,verticalAccuracy,course,speed,timestamp,floorLevel,
 * Doco fixes
 * Bug fixes. This version implements robust testing and solidifies the interface
+
+## 0.5.0-beta
+* Image link fixes
