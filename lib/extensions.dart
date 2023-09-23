@@ -11,6 +11,9 @@ extension NullyExtensions<T> on T? {
     if (this != null) and?.call(this as T);
     return this != null ? action(this as T) : Future<void>.value();
   }
+
+  ///Whether or not this variable has a non-null value
+  bool get hasValue => this != null;
 }
 
 ///Converts the platform data, possibly including the lat/log [LocationResult]

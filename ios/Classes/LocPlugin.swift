@@ -57,8 +57,10 @@ public class LocPlugin: NSObject, FlutterPlugin, FlutterStreamHandler, CLLocatio
     
     public func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         switch status {
-        case .restricted, .denied:
-            eventSink?(FlutterError(code: "LOCATION_PERMISSION_DENIED", message: "Location permission denied", details: nil))
+        case .restricted:
+            eventSink?(FlutterError(code: "LOCATION_PERMISSION_DENIED", message: "Location permission restricted", details: ["permissionStatus": "restricted"]))
+        case .denied:
+            eventSink?(FlutterError(code: "LOCATION_PERMISSION_DENIED", message: "Location permission denied", details: ["permissionStatus": "denied"]))
         case .authorizedAlways, .authorizedWhenInUse:
             break
         case .notDetermined:

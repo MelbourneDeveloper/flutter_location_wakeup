@@ -17,4 +17,14 @@ void main() {
     expect(location.latitude, isNot(0));
     expect(location.longitude, isNot(0));
   });
+
+  testWidgets('Monitor And Wait For First Permission Error',
+      (WidgetTester tester) async {
+    final LocationWakeup plugin = LocationWakeup();
+    final resultFuture = plugin.locationUpdates.first;
+    await plugin.startMonitoring();
+    final result = await resultFuture;
+    expect(result.isSuccess, false);
+    expect(result.permissionStatus, PermissionStatus.denied);
+  });
 }

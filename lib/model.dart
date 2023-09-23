@@ -1,13 +1,17 @@
 ///The result of a location change from the device
 class LocationResult {
   ///Successful result
-  LocationResult(Location location)
-      : _location = location,
+  LocationResult(
+    Location location, {
+    this.permissionStatus = PermissionStatus.notSpecified,
+  })  : _location = location,
         _error = null;
 
   ///Error from the device
-  LocationResult.error(Error error)
-      : _error = error,
+  LocationResult.error(
+    Error error, {
+    this.permissionStatus = PermissionStatus.notSpecified,
+  })  : _error = error,
         _location = null;
 
   final Location? _location;
@@ -18,6 +22,10 @@ class LocationResult {
 
   ///True if the result is an error
   bool get isError => _error != null;
+
+  ///The permission status of the location permission if the device
+  ///sent it
+  final PermissionStatus permissionStatus;
 
   ///Allows you to access the location if it is successful or
   ///the error if it is not
@@ -59,6 +67,40 @@ enum ErrorCode {
 
   ///No known information from the device about what went wrong
   unknown,
+}
+
+///Represents the status of the location permission on the device
+enum PermissionStatus {
+  // Common statuses
+
+  ///Permission is granted
+  granted,
+
+  /// Permission is denied but can be requested again.
+  denied,
+
+  /// Permission is denied and cannot be requested again without user
+  /// intervention.
+  permanentlyDenied,
+
+  // iOS specific statuses
+
+  /// User has not yet made a choice with regards to this
+  /// application.
+  notDetermined,
+
+  /// This application is not authorized to use location services
+  /// due to active restrictions.
+  restricted,
+
+  // Android specific statuses
+
+  /// On Android Q and above, represents that only foreground location
+  /// permission is granted, and background access is denied.
+  limited,
+
+  ///We have no information from the device about the permission status
+  notSpecified,
 }
 
 ///Represents an error from the device in regards to location
