@@ -7,7 +7,7 @@ extension TesterExtensions on WidgetTester {
   ///EventChannel and therefore achieve full integration testing of Flutter
   ///plugins without, except for the native code
   // ignore: avoid_annotating_with_dynamic
-  Future<void> Function(dynamic) getEventChannelSender({
+  Future<void> Function(Map<String, dynamic>) getEventChannelSender({
     required MethodChannel methodChannel,
     required EventChannel eventChannel,
     required Future<Object?>? Function(MethodCall) methodHandler,
@@ -23,18 +23,10 @@ extension TesterExtensions on WidgetTester {
     );
 
     // ignore: avoid_annotating_with_dynamic
-    Future<void> send(dynamic platformData) async {
+    Future<void> send(Map<String, dynamic> platformData) async {
       final MethodCall methodCall;
-      if (platformData is PlatformException) {
-        final errorDetails = <String, dynamic>{
-          'code': platformData.code,
-          'message': platformData.message,
-          'details': platformData.details,
-        };
-        methodCall = MethodCall('error', errorDetails);
-      } else {
-        methodCall = MethodCall('listen', platformData);
-      }
+
+      methodCall = MethodCall('listen', platformData);
 
       final encodedData =
           const StandardMethodCodec().encodeMethodCall(methodCall);

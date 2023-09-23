@@ -9,8 +9,7 @@ extension LocationWakeupTesterExtensions on WidgetTester {
   Future<
       (
         LocationWakeup,
-        // ignore: avoid_annotating_with_dynamic
-        Future<void> Function(dynamic),
+        Future<void> Function(Map<String, dynamic>),
       )> initLocationWakeupWithMockChannel(
     Future<Object?>? Function(MethodCall) methodHandler,
   ) async {
