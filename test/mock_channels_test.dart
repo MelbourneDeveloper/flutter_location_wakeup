@@ -8,13 +8,6 @@ void main() {
 
     final plugin = LocationWakeup();
 
-    const eventChannel = EventChannel('loc_stream');
-    final fakeStreamHandler = FakeStreamHandler();
-    tester.binding.defaultBinaryMessenger.setMockStreamHandler(
-      eventChannel,
-      fakeStreamHandler,
-    );
-
     tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
       const MethodChannel('loc'),
       (methodCall) async {
@@ -38,7 +31,7 @@ void main() {
       'longitude': -74.0060,
       'altitude': 500.0,
       'speed': 5.0,
-      'timestamp': 1677648652,
+      'timestamp': 1677648652.0,
       'permissionStatus': 'granted',
     };
 
@@ -47,8 +40,20 @@ void main() {
     final encodedData =
         const StandardMethodCodec().encodeMethodCall(methodCall);
 
-    await eventChannel.binaryMessenger.send('loc_stream', encodedData);
-    final events = await plugin.locationUpdates.toList();
+    final methodChannelLocationWakeup =
+        LocationWakeupPlatform.instance as MethodChannelLocationWakeup;
+
+    final fakeStreamHandler = FakeStreamHandler();
+    tester.binding.defaultBinaryMessenger.setMockStreamHandler(
+      methodChannelLocationWakeup.eventChannel,
+      fakeStreamHandler,
+    );
+
+    await methodChannelLocationWakeup.eventChannel.binaryMessenger
+        .send('loc_stream', encodedData);
+
+    final events = await plugin.locationUpdates.first;
+
     expect(
       events,
       isNotEmpty,
@@ -66,6 +71,7 @@ class FakeStreamHandler extends MockStreamHandler {
 
   @override
   void onListen(Object? arguments, MockStreamHandlerEventSink events) {
+    events.success(arguments);
     // TODO: implement onListen
   }
 }
