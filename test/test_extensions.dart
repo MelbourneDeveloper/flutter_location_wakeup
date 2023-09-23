@@ -6,7 +6,6 @@ extension TesterExtensions on WidgetTester {
   ///Creates a function that mimics the ability to send events to an
   ///EventChannel and therefore achieve full integration testing of Flutter
   ///plugins without, except for the native code
-  // ignore: avoid_annotating_with_dynamic
   Future<void> Function(Map<String, dynamic>) getEventChannelSender({
     required MethodChannel methodChannel,
     required EventChannel eventChannel,
@@ -22,7 +21,6 @@ extension TesterExtensions on WidgetTester {
       FakeStreamHandler(),
     );
 
-    // ignore: avoid_annotating_with_dynamic
     Future<void> send(Map<String, dynamic> platformData) async {
       final MethodCall methodCall;
 
