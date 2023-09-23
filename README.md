@@ -21,7 +21,15 @@ To set up the plugin for iOS, you need to request location permissions. Add the 
 
 ### Sample Usage
 
-For a comprehensive demonstration, refer to the example provided in the `example` directory. Below is a snippet showcasing a stateful widget that listens for location updates and presents them using a `SnackBar`:
+For a comprehensive demonstration, refer to the example provided in the `example` directory. 
+
+![Sample Usage](/images/example.png)
+
+Test the functionality with the Freeway Drive feature of the iOS Simulator.
+
+![Freeway Drive](/images/freewaydrive.png)
+
+Below is a snippet showcasing a stateful widget that listens for location updates and presents them using a `SnackBar`:
 
 ```dart
 class _LocationDisplayState extends State<LocationDisplay> {
