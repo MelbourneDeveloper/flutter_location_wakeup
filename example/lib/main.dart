@@ -4,7 +4,6 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_location_wakeup/flutter_location_wakeup.dart';
 
-
 final messengerStateKey = GlobalKey<ScaffoldMessengerState>();
 
 void main() {
@@ -59,7 +58,17 @@ class _LocationDisplayState extends State<LocationDisplay> {
 
   void onLocationResultChange(LocationResult result) {
     _display = result.match(
-        onSuccess: (l) => 'Lat: ${l.latitude}\nLong: ${l.longitude}',
+        onSuccess: (l) => '''
+Lat: ${l.latitude}
+Long: ${l.longitude}
+Altitude: ${l.altitude}
+Horizontal Accuracy: ${l.horizontalAccuracy}
+Vertical Accuracy: ${l.verticalAccuracy}
+Course: ${l.course}
+Speed: ${l.speed}
+Timestamp: ${l.timestamp}
+Floor Level: ${l.floorLevel}
+''',
         onError: (e) => e.message);
 
     messengerStateKey.currentState.let(
