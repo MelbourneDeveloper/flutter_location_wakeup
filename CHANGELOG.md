@@ -6,3 +6,9 @@
 
 ## 0.3.0-beta
 * Doco fixes
+
+## 0.4.0-beta
+* Implement robust error handling
+* Add extra information to LocationResult: altitude,horizontalAccuracy,verticalAccuracy,course,speed,timestamp,floorLevel,
+* Doco fixes
+* Bug fixes. This version implements robust testing and solidifies the interface
