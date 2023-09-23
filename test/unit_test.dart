@@ -142,9 +142,21 @@ void main() {
       expect(result.permissionStatus, PermissionStatus.granted);
       expect(result.isSuccess, true);
       expect(result.isError, false);
+      final matchedLocation =
+          result.match(onSuccess: (l) => l, onError: (e) => null);
       expect(
-        result.match(onSuccess: (l) => l, onError: (e) => null),
-        const Location(latitude: 40.7128, longitude: 74.0060),
+        matchedLocation,
+        Location(
+          latitude: 40.7128,
+          longitude: 74.0060,
+          altitude: 100,
+          horizontalAccuracy: 10,
+          verticalAccuracy: 5,
+          course: 180,
+          speed: 15,
+          timestamp: DateTime(2023, 03, 01, 16, 30, 52),
+          floorLevel: 2,
+        ),
       );
     });
 
@@ -225,6 +237,179 @@ void main() {
         result4.match(onSuccess: (l) => null, onError: (e) => e.errorCode),
         ErrorCode.unknown,
       );
+    });
+  });
+
+  group('Location Equality Tests', () {
+    test('Two locations with different altitudes should not be equal', () {
+      const location1 = Location(
+        latitude: 40.7128,
+        longitude: 74.0060,
+        altitude: 100,
+      );
+      const location2 = Location(
+        latitude: 40.7128,
+        longitude: 74.0060,
+        altitude: 200,
+      );
+
+      expect(location1, isNot(location2));
+    });
+
+    test(
+        'Two locations with different horizontalAccuracies should not be equal',
+        () {
+      const location1 = Location(
+        latitude: 40.7128,
+        longitude: 74.0060,
+        horizontalAccuracy: 10,
+      );
+      const location2 = Location(
+        latitude: 40.7128,
+        longitude: 74.0060,
+        horizontalAccuracy: 20,
+      );
+
+      expect(location1, isNot(location2));
+    });
+
+    test('Two locations with different verticalAccuracies should not be equal',
+        () {
+      const location1 = Location(
+        latitude: 40.7128,
+        longitude: 74.0060,
+        verticalAccuracy: 5,
+      );
+      const location2 = Location(
+        latitude: 40.7128,
+        longitude: 74.0060,
+        verticalAccuracy: 10,
+      );
+
+      expect(location1, isNot(location2));
+    });
+
+    test('Two locations with different courses should not be equal', () {
+      const location1 = Location(
+        latitude: 40.7128,
+        longitude: 74.0060,
+        course: 180,
+      );
+      const location2 = Location(
+        latitude: 40.7128,
+        longitude: 74.0060,
+        course: 190,
+      );
+
+      expect(location1, isNot(location2));
+    });
+
+    test('Two locations with different speeds should not be equal', () {
+      const location1 = Location(
+        latitude: 40.7128,
+        longitude: 74.0060,
+        speed: 15,
+      );
+      const location2 = Location(
+        latitude: 40.7128,
+        longitude: 74.0060,
+        speed: 20,
+      );
+
+      expect(location1, isNot(location2));
+    });
+
+    test('Two locations with different timestamps should not be equal', () {
+      final location1 = Location(
+        latitude: 40.7128,
+        longitude: 74.0060,
+        timestamp: DateTime(2023, 9, 20),
+      );
+      final location2 = Location(
+        latitude: 40.7128,
+        longitude: 74.0060,
+        timestamp: DateTime(2023, 9, 21),
+      );
+
+      expect(location1, isNot(location2));
+    });
+
+    test('Two locations with different floorLevels should not be equal', () {
+      const location1 = Location(
+        latitude: 40.7128,
+        longitude: 74.0060,
+        floorLevel: 2,
+      );
+      const location2 = Location(
+        latitude: 40.7128,
+        longitude: 74.0060,
+        floorLevel: 3,
+      );
+
+      expect(location1, isNot(location2));
+    });
+
+    test('Two locations with different altitudes should not be equal', () {
+      const location1 = Location(
+        latitude: 40.7128,
+        longitude: 74.0060,
+        altitude: 100,
+      );
+      const location2 = Location(
+        latitude: 40.7128,
+        longitude: 74.0060,
+        altitude: 150,
+      );
+
+      expect(location1, isNot(location2));
+    });
+
+    test(
+        'Two locations with different horizontalAccuracies should not be equal',
+        () {
+      const location1 = Location(
+        latitude: 40.7128,
+        longitude: 74.0060,
+        horizontalAccuracy: 10,
+      );
+      const location2 = Location(
+        latitude: 40.7128,
+        longitude: 74.0060,
+        horizontalAccuracy: 15,
+      );
+
+      expect(location1, isNot(location2));
+    });
+
+    test('Two locations with different verticalAccuracies should not be equal',
+        () {
+      const location1 = Location(
+        latitude: 40.7128,
+        longitude: 74.0060,
+        verticalAccuracy: 5,
+      );
+      const location2 = Location(
+        latitude: 40.7128,
+        longitude: 74.0060,
+        verticalAccuracy: 10,
+      );
+
+      expect(location1, isNot(location2));
+    });
+
+    test('Two locations with different courses should not be equal', () {
+      const location1 = Location(
+        latitude: 40.7128,
+        longitude: 74.0060,
+        course: 180,
+      );
+      const location2 = Location(
+        latitude: 40.7128,
+        longitude: 74.0060,
+        course: 190,
+      );
+
+      expect(location1, isNot(location2));
     });
   });
 }

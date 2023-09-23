@@ -54,10 +54,15 @@ class LocationResult {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is LocationResult &&
-        other._location == _location &&
-        other.permissionStatus == permissionStatus &&
-        other._error == _error;
+    if (other is LocationResult) {
+      return (other._location == _location ||
+              (other._location != null && other._location == _location)) &&
+          other.permissionStatus == permissionStatus &&
+          (other._error == _error ||
+              (other._error != null && other._error == _error));
+    }
+
+    return false;
   }
 
   @override
@@ -209,11 +214,27 @@ class Location {
 
     return other is Location &&
         other.latitude == latitude &&
-        other.longitude == longitude;
+        other.longitude == longitude &&
+        other.altitude == altitude &&
+        other.horizontalAccuracy == horizontalAccuracy &&
+        other.verticalAccuracy == verticalAccuracy &&
+        other.course == course &&
+        other.speed == speed &&
+        other.timestamp == timestamp &&
+        other.floorLevel == floorLevel;
   }
 
   @override
-  int get hashCode => latitude.hashCode ^ longitude.hashCode;
+  int get hashCode =>
+      latitude.hashCode ^
+      longitude.hashCode ^
+      (altitude?.hashCode ?? 0) ^
+      (horizontalAccuracy?.hashCode ?? 0) ^
+      (verticalAccuracy?.hashCode ?? 0) ^
+      (course?.hashCode ?? 0) ^
+      (speed?.hashCode ?? 0) ^
+      (timestamp?.hashCode ?? 0) ^
+      (floorLevel?.hashCode ?? 0);
 
   @override
   String toString() => 'Location(latitude: $latitude, longitude: $longitude)';
