@@ -1,4 +1,3 @@
-
 import 'package:flutter_location_wakeup/method_channel_location_wakeup.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
@@ -24,5 +23,5 @@ abstract class LocationWakeupPlatform extends PlatformInterface {
   Future<void> startMonitoring();
 
   ///A stream of location changes
-  Stream<Map<String, double>> get locationUpdates;
+  Stream<dynamic> get locationUpdates;
 }

@@ -1,6 +1,6 @@
 # flutter_location_wakeup
 
-`flutter_location_wakeup` is a Flutter plugin designed to listen for significant location changes on the device. When the changes are detected, the foreground app wakes up, or stays awake from suspension. 
+`flutter_location_wakeup` is a Flutter plugin designed to listen for significant location changes on the device. When the changes are detected, the foreground app wakes up, or stays awake from suspension. Use this library when you need location changes to keep the foreground app alive, such as in the case of a navigation apps, or place based interaction apps.
 
 The plugin's iOS implementation predominantly relies on Apple's [`startMonitoringSignificantLocationChanges`](https://developer.apple.com/documentation/corelocation/cllocationmanager/1423531-startmonitoringsignificantlocati) Swift API. For an in-depth understanding of its functionality, refer to Apple's official documentation. As of now, the plugin offers support exclusively for iOS, with Android support in the pipeline.
 
@@ -21,7 +21,15 @@ To set up the plugin for iOS, you need to request location permissions. Add the 
 
 ### Sample Usage
 
-For a comprehensive demonstration, refer to the example provided in the `example` directory. Below is a snippet showcasing a stateful widget that listens for location updates and presents them using a `SnackBar`:
+For a comprehensive demonstration, refer to the example provided in the `example` directory. 
+
+![Sample Usage](/images/example.png)
+
+Test the functionality with the Freeway Drive feature of the iOS Simulator.
+
+![Freeway Drive](/images/freewaydrive.png)
+
+Below is a snippet showcasing a stateful widget that listens for location updates and presents them using a `SnackBar`:
 
 ```dart
 class _LocationDisplayState extends State<LocationDisplay> {
