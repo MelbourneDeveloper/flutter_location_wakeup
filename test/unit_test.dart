@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('LocationResult', () {
-    const location1 = Location(
+    final location1 = Location(
       latitude: 40.7128,
       longitude: 74.0060,
       altitude: 100,
@@ -11,7 +11,7 @@ void main() {
       verticalAccuracy: 5,
       course: 180,
       speed: 15,
-      timestamp: 1677648652,
+      timestamp: DateTime(2023, 9).toUtc(),
       floorLevel: 2,
     );
 
@@ -26,11 +26,11 @@ void main() {
     );
 
     test('equality and hash code tests', () {
-      const result1 = LocationResult(
+      final result1 = LocationResult(
         location1,
         permissionStatus: PermissionStatus.notSpecified,
       );
-      const result2 = LocationResult(
+      final result2 = LocationResult(
         location1,
         permissionStatus: PermissionStatus.notSpecified,
       );
@@ -64,7 +64,7 @@ void main() {
     });
 
     test('match() and locationOr() tests', () {
-      const result1 = LocationResult(
+      final result1 = LocationResult(
         location1,
         permissionStatus: PermissionStatus.notSpecified,
       );
@@ -127,7 +127,16 @@ void main() {
       expect(location.verticalAccuracy, 5.0);
       expect(location.course, 180.0);
       expect(location.speed, 15.0);
-      expect(location.timestamp, 1677648652.0);
+      expect(
+          location.timestamp,
+          DateTime(
+            2023,
+            03,
+            1,
+            16,
+            30,
+            52,
+          ),);
       expect(location.floorLevel, 2);
       expect(result.permissionStatus, PermissionStatus.granted);
       expect(result.isSuccess, true);

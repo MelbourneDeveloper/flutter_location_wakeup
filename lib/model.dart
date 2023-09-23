@@ -163,7 +163,7 @@ class Location {
   final double? verticalAccuracy;
   final double? course;
   final double? speed;
-  final double? timestamp;
+  final DateTime? timestamp;
   final int? floorLevel;
 
   ///The latitude of the location

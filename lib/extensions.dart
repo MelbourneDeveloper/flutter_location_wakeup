@@ -36,10 +36,12 @@ extension NullyExtensions<T> on T? {
 // ignore: avoid_annotating_with_dynamic
 LocationResult toLocationResult(dynamic platformData) {
   if (platformData is Map) {
+    final latitude = platformData['latitude'];
+    final longitude = platformData['longitude'];
     final permissionStatusString = platformData['permissionStatus'] as String?;
 
-    if (platformData['latitude'] is! double ||
-        platformData['longitude'] is! double) {
+    if (latitude is! double ||
+        longitude is! double) {
       return LocationResult.error(
         const Error(
           message: 'Latitude or longitude is missing',
@@ -48,16 +50,18 @@ LocationResult toLocationResult(dynamic platformData) {
         permissionStatus: permissionStatusString.toPermissionStatus(),
       );
     }
-    final latitude = platformData['latitude'] as double;
-    final longitude = platformData['longitude'] as double;
 
     final altitude = platformData['altitude'] as double?;
     final horizontalAccuracy = platformData['horizontalAccuracy'] as double?;
     final verticalAccuracy = platformData['verticalAccuracy'] as double?;
     final course = platformData['course'] as double?;
     final speed = platformData['speed'] as double?;
-    final timestamp =
-        platformData['timestamp'] as double?; // Convert to DateTime if needed
+    final unixTimestamp = platformData['timestamp'] as double?;
+
+    final timestamp = unixTimestamp != null
+        ? DateTime.fromMillisecondsSinceEpoch(unixTimestamp.toInt() * 1000)
+        : null;
+
     final floorLevel = platformData['floorLevel'] as int?;
 
     return LocationResult(
