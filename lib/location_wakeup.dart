@@ -68,9 +68,9 @@ void streamError(
       );
 
       streamController.add(locationResult);
+      return;
     }
-    streamController.add(LocationResult.error(Error.unknown));
-    return;
   }
 
+  streamController.add(LocationResult.error(Error.unknown));
 }
