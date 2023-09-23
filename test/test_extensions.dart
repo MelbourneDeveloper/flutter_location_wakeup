@@ -3,39 +3,40 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'fake_stream_handler.dart';
 
-///Initializes the plugin, ensures that the initialization
-///reaches the platform side, and emits one event from
-///the event channel.
-Future<R> initializeAndEmitOne<TPlugin, R>(
-  TPlugin plugin,
-  WidgetTester tester,
-  MethodChannel methodChannel,
-  EventChannel eventChannel,
-  Future<void> Function(TPlugin plugin) initializePlugin,
-  Future<Object?>? Function(MethodCall)? handler,
-  Map<String, dynamic> firstStreamData,
-  Future<R> Function(TPlugin plugin) onEvent,
-) async {
-  tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
-    methodChannel,
-    handler,
-  );
+extension Dasdasd on WidgetTester {
+  ///Initializes the plugin, ensures that the initialization
+  ///reaches the platform side, and emits one event from
+  ///the event channel.
+  Future<R> initializeAndEmitOne<TPlugin, R>(
+    TPlugin plugin,
+    MethodChannel methodChannel,
+    EventChannel eventChannel,
+    Future<void> Function(TPlugin plugin) initializePlugin,
+    Future<Object?>? Function(MethodCall)? handler,
+    Map<String, dynamic> firstStreamData,
+    Future<R> Function(TPlugin plugin) onEvent,
+  ) async {
+    binding.defaultBinaryMessenger.setMockMethodCallHandler(
+      methodChannel,
+      handler,
+    );
 
-  TestWidgetsFlutterBinding.ensureInitialized();
+    TestWidgetsFlutterBinding.ensureInitialized();
 
-  await initializePlugin(plugin);
+    await initializePlugin(plugin);
 
-  final methodCall = MethodCall('listen', firstStreamData);
+    final methodCall = MethodCall('listen', firstStreamData);
 
-  final encodedData = const StandardMethodCodec().encodeMethodCall(methodCall);
+    final encodedData =
+        const StandardMethodCodec().encodeMethodCall(methodCall);
 
-  final fakeStreamHandler = FakeStreamHandler();
-  tester.binding.defaultBinaryMessenger.setMockStreamHandler(
-    eventChannel,
-    fakeStreamHandler,
-  );
+    binding.defaultBinaryMessenger.setMockStreamHandler(
+      eventChannel,
+      FakeStreamHandler(),
+    );
 
-  await eventChannel.binaryMessenger.send(eventChannel.name, encodedData);
+    await eventChannel.binaryMessenger.send(eventChannel.name, encodedData);
 
-  return onEvent(plugin);
+    return onEvent(plugin);
+  }
 }

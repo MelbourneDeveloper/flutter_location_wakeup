@@ -20,9 +20,8 @@ void main() {
     };
 
     final locationResult =
-        await initializeAndEmitOne<LocationWakeup, LocationResult>(
+        await tester.initializeAndEmitOne<LocationWakeup, LocationResult>(
       LocationWakeup(),
-      tester,
       methodChannelLocationWakeup.channel,
       methodChannelLocationWakeup.eventChannel,
       (p) => p.startMonitoring(),
