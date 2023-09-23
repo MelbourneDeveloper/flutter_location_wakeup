@@ -1,6 +1,5 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'fake_stream_handler.dart';
 
 extension TesterExtensions on WidgetTester {
