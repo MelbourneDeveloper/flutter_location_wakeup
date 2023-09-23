@@ -27,6 +27,7 @@ class LocationResult {
   ///sent it
   final PermissionStatus permissionStatus;
 
+  ///Represents an unknown location result with an error
   static const unknownError = LocationResult.error(
     Error.unknown,
     permissionStatus: PermissionStatus.notSpecified,
