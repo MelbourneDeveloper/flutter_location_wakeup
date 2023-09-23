@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:flutter_location_wakeup/flutter_location_wakeup.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'location_wakeup_test_extensions.dart';
@@ -46,5 +47,46 @@ void main() {
     //Verify that the LocationResult is correct
     expect(locationResult.locationOrEmpty.latitude, locationData['latitude']);
     expect(locationResult.locationOrEmpty.longitude, locationData['longitude']);
+  });
+
+  testWidgets('Receives permission error from iOS', (tester) async {
+    // Initialize the plugin and get the locationWakeup and sendToEventChannel
+    final (locationWakeup, sendToEventChannel) =
+        await tester.initLocationWakeupWithMockChannel(
+      handleMethodCall,
+    );
+
+    // Simulate a permission error from iOS
+    final permissionErrorData = <String, dynamic>{
+      'errorCode': locationPermissionDeniedErrorCode,
+      'message': 'Location permission denied',
+      'details': {
+        'permissionStatus': 'denied',
+      },
+    };
+
+    // Send the error event to the EventChannel (Mimics the Swift code)
+    await sendToEventChannel(permissionErrorData);
+
+    // Wait for the first LocationResult on the stream
+    final locationResult = await locationWakeup.locationUpdates.first;
+
+    // Verify that calling startMonitoring on the plugin sent the
+    // correct method call to the device platform
+    expect(receivedStartMonitoring, isTrue);
+
+    // Verify that the LocationResult is an error
+    expect(locationResult.isError, isTrue);
+
+    // Verify the error details
+    expect(
+      locationResult.errorOrEmpty().errorCode,
+      ErrorCode.locationPermissionDenied,
+    );
+
+    // expect(
+    //   locationResult.errorOrEmpty().message,
+    //   permissionErrorData['message'],
+    // );
   });
 }

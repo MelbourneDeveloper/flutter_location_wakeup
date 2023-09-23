@@ -46,6 +46,8 @@ final class LocationResult {
   Location locationOr(Location Function(Error error) onError) =>
       isSuccess ? _location! : onError(_error!);
 
+  Error errorOrEmpty() => isError ? _error! : Error.empty;
+
   /// Returns the location if it's successful, or an empty location if it's an
   /// error.
   Location get locationOrEmpty => _location ?? Location.empty;
@@ -79,6 +81,9 @@ enum ErrorCode {
 
   ///No known information from the device about what went wrong
   unknown,
+
+  //Not an error
+  none,
 }
 
 ///Represents the status of the location permission on the device
@@ -130,6 +135,12 @@ final class Error {
   static const unknown = Error(
     message: 'Unknown',
     errorCode: ErrorCode.unknown,
+  );
+
+  ///No error
+  static const empty = Error(
+    message: '',
+    errorCode: ErrorCode.none,
   );
 
   @override
