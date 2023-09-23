@@ -8,19 +8,18 @@ void main() {
   testWidgets('Receives events from the event channel', (tester) async {
     var receivedStartMonitoring = false;
 
+    final methodChannelLocationWakeup =
+        LocationWakeupPlatform.instance as MethodChannelLocationWakeup;
+
     final plugin = LocationWakeup();
 
     tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
-      const MethodChannel('loc'),
+      methodChannelLocationWakeup.channel,
       (methodCall) async {
         if (methodCall.method == 'startMonitoring') {
           receivedStartMonitoring = true;
-          return null;
         }
-        throw PlatformException(
-          code: 'UNAVAILABLE',
-          message: 'Mock error message',
-        );
+        return null;
       },
     );
 
@@ -42,15 +41,14 @@ void main() {
     final encodedData =
         const StandardMethodCodec().encodeMethodCall(methodCall);
 
-    const eventChannel = EventChannel('loc_stream');
-
     final fakeStreamHandler = FakeStreamHandler();
     tester.binding.defaultBinaryMessenger.setMockStreamHandler(
-      eventChannel,
+      methodChannelLocationWakeup.eventChannel,
       fakeStreamHandler,
     );
 
-    await eventChannel.binaryMessenger.send('loc_stream', encodedData);
+    await methodChannelLocationWakeup.eventChannel.binaryMessenger
+        .send('loc_stream', encodedData);
 
     final locationResult = await plugin.locationUpdates.first;
 
