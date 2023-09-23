@@ -28,6 +28,10 @@ void main() {
       expect(result3, isNot(result6));
       expect(result1.hashCode, result2.hashCode);
       expect(result3.hashCode, result4.hashCode);
+
+      // Additional assertions for the new code
+      expect(result1.locationOrEmpty, location1);
+      expect(result3.locationOrEmpty, Location.empty);
     });
 
     test('match() and locationOr() tests', () {
