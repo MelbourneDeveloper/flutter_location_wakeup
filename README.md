@@ -23,11 +23,11 @@ To set up the plugin for iOS, you need to request location permissions. Add the 
 
 For a comprehensive demonstration, refer to the example provided in the `example` directory. 
 
-![Sample Usage](/images/example.png)
+![Sample Usage](https://github.com/MelbourneDeveloper/flutter_location_wakeup/blob/main/images/example.png)
 
 Test the functionality with the Freeway Drive feature of the iOS Simulator.
 
-![Freeway Drive](/images/freewaydrive.png)
+![Freeway Drive](https://github.com/MelbourneDeveloper/flutter_location_wakeup/blob/main/images/freewaydrive.png)
 
 Below is a snippet showcasing a stateful widget that listens for location updates and presents them using a `SnackBar`:
 
