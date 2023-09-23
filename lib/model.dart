@@ -1,5 +1,5 @@
 ///The result of a location change from the device
-class LocationResult {
+final class LocationResult {
   ///Successful result
   const LocationResult(
     Location location, {
@@ -116,7 +116,7 @@ enum PermissionStatus {
 }
 
 ///Represents an error from the device in regards to location
-class Error {
+final class Error {
   ///Creates an error with the given message and error code
   const Error({required this.message, required this.errorCode});
 
@@ -150,7 +150,7 @@ class Error {
 
 ///Represents a location on earth by latitude and longitude and other optional
 ///information
-class Location {
+final class Location {
   ///Creates a location
   const Location({
     required this.latitude,
