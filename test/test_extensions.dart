@@ -26,7 +26,12 @@ extension TesterExtensions on WidgetTester {
     Future<void> send(dynamic platformData) async {
       final MethodCall methodCall;
       if (platformData is PlatformException) {
-        methodCall = MethodCall('listen', platformData.details);
+        final errorDetails = <String, dynamic>{
+          'code': platformData.code,
+          'message': platformData.message,
+          'details': platformData.details,
+        };
+        methodCall = MethodCall('error', errorDetails);
       } else {
         methodCall = MethodCall('listen', platformData);
       }
