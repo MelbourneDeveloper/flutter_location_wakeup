@@ -1,14 +1,14 @@
 ///The result of a location change from the device
 class LocationResult {
   ///Successful result
-  LocationResult(
+  const LocationResult(
     Location location, {
     required this.permissionStatus,
   })  : _location = location,
         _error = null;
 
   ///Error from the device
-  LocationResult.error(
+  const LocationResult.error(
     Error error, {
     required this.permissionStatus,
   })  : _error = error,
@@ -26,6 +26,11 @@ class LocationResult {
   ///The permission status of the location permission if the device
   ///sent it
   final PermissionStatus permissionStatus;
+
+  static const unknownError = LocationResult.error(
+    Error.unknown,
+    permissionStatus: PermissionStatus.notSpecified,
+  );
 
   ///Allows you to access the location if it is successful or
   ///the error if it is not
@@ -50,6 +55,7 @@ class LocationResult {
 
     return other is LocationResult &&
         other._location == _location &&
+        other.permissionStatus == permissionStatus &&
         other._error == _error;
   }
 

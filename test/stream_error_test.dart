@@ -36,8 +36,8 @@ void main() {
       expect(
         await emittedEvents,
         [
-          LocationResult.error(
-            const Error(
+          const LocationResult.error(
+            Error(
               message: 'Permission denied',
               errorCode: ErrorCode.locationPermissionDenied,
             ),
@@ -65,10 +65,7 @@ void main() {
       expect(
         await emittedEvents,
         [
-          LocationResult.error(
-            Error.unknown,
-            permissionStatus: PermissionStatus.notSpecified,
-          ),
+          LocationResult.unknownError,
         ],
       );
     });
@@ -81,10 +78,7 @@ void main() {
       expect(
         streamController.stream,
         emits(
-          LocationResult.error(
-            Error.unknown,
-            permissionStatus: PermissionStatus.notSpecified,
-          ),
+          LocationResult.unknownError,
         ),
       );
     });

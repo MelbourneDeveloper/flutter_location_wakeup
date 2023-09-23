@@ -15,27 +15,27 @@ void main() {
     );
 
     test('equality and hash code tests', () {
-      final result1 = LocationResult(
+      const result1 = LocationResult(
         location1,
         permissionStatus: PermissionStatus.notSpecified,
       );
-      final result2 = LocationResult(
+      const result2 = LocationResult(
         location1,
         permissionStatus: PermissionStatus.notSpecified,
       );
-      final result3 = LocationResult.error(
+      const result3 = LocationResult.error(
         error1,
         permissionStatus: PermissionStatus.notSpecified,
       );
-      final result4 = LocationResult.error(
+      const result4 = LocationResult.error(
         error1,
         permissionStatus: PermissionStatus.notSpecified,
       );
-      final result5 = LocationResult(
+      const result5 = LocationResult(
         location2,
         permissionStatus: PermissionStatus.notSpecified,
       );
-      final result6 = LocationResult.error(
+      const result6 = LocationResult.error(
         error2,
         permissionStatus: PermissionStatus.notSpecified,
       );
@@ -53,11 +53,11 @@ void main() {
     });
 
     test('match() and locationOr() tests', () {
-      final result1 = LocationResult(
+      const result1 = LocationResult(
         location1,
         permissionStatus: PermissionStatus.notSpecified,
       );
-      final result2 = LocationResult.error(
+      const result2 = LocationResult.error(
         error1,
         permissionStatus: PermissionStatus.notSpecified,
       );

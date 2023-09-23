@@ -35,7 +35,7 @@ extension NullyExtensions<T> on T? {
 ///to the result object
 // ignore: avoid_annotating_with_dynamic
 LocationResult toLocationResult(dynamic platformData) {
-//Why doesnt this work as an extension
+  //Why doesnt this work as an extension
 
   if (platformData is Map) {
     final latitude = platformData['latitude'];
@@ -56,5 +56,7 @@ LocationResult toLocationResult(dynamic platformData) {
           );
   }
 
-  throw UnimplementedError();
+  //If this happens, please record the value in platformData and open an issue
+  //on the github repo
+  return LocationResult.unknownError;
 }

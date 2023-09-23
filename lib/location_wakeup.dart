@@ -67,9 +67,6 @@ void streamError(
   }
 
   streamController.add(
-    LocationResult.error(
-      Error.unknown,
-      permissionStatus: PermissionStatus.notSpecified,
-    ),
+    LocationResult.unknownError,
   );
 }
