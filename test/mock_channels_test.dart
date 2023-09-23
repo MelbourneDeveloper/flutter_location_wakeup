@@ -19,21 +19,24 @@ void main() {
       'permissionStatus': 'granted',
     };
 
-    final locationResult =
-        await tester.initializeAndEmitOne<LocationWakeup, LocationResult>(
-      plugin: LocationWakeup(),
+    final locationWakeup = LocationWakeup();
+
+    final send = tester.initializeAndEmitOne<LocationWakeup, LocationResult>(
       methodChannel: methodChannelLocationWakeup.channel,
       eventChannel: methodChannelLocationWakeup.eventChannel,
-      initializePlugin: (locationWakeup) => locationWakeup.startMonitoring(),
       methodHandler: (methodCall) async {
         if (methodCall.method == 'startMonitoring') {
           receivedStartMonitoring = true;
         }
         return null;
       },
-      firstStreamData: locationData,
-      onEvent: (locationWakeup) => locationWakeup.locationUpdates.first,
     );
+
+    await locationWakeup.startMonitoring();
+
+    await send(locationData);
+
+    final locationResult = await locationWakeup.locationUpdates.first;
 
     expect(receivedStartMonitoring, isTrue);
     expect(locationResult.locationOrEmpty.latitude, locationData['latitude']);

@@ -7,15 +7,11 @@ extension Dasdasd on WidgetTester {
   ///Initializes the plugin, ensures that the initialization
   ///reaches the platform side, and emits one event from
   ///the event channel.
-  Future<R> initializeAndEmitOne<TPlugin, R>({
-    required TPlugin plugin,
+  Future<void> Function(Map<String, dynamic>) initializeAndEmitOne<TPlugin, R>({
     required MethodChannel methodChannel,
     required EventChannel eventChannel,
-    required Future<void> Function(TPlugin plugin) initializePlugin,
     required Future<Object?>? Function(MethodCall)? methodHandler,
-    required Map<String, dynamic> firstStreamData,
-    required Future<R> Function(TPlugin plugin) onEvent,
-  }) async {
+  }) {
     binding.defaultBinaryMessenger.setMockMethodCallHandler(
       methodChannel,
       methodHandler,
@@ -28,15 +24,15 @@ extension Dasdasd on WidgetTester {
 
     TestWidgetsFlutterBinding.ensureInitialized();
 
-    await initializePlugin(plugin);
+    Future<void> send(Map<String, dynamic> firstStreamData) async {
+      final methodCall = MethodCall('listen', firstStreamData);
 
-    final methodCall = MethodCall('listen', firstStreamData);
+      final encodedData =
+          const StandardMethodCodec().encodeMethodCall(methodCall);
 
-    final encodedData =
-        const StandardMethodCodec().encodeMethodCall(methodCall);
+      await eventChannel.binaryMessenger.send(eventChannel.name, encodedData);
+    }
 
-    await eventChannel.binaryMessenger.send(eventChannel.name, encodedData);
-
-    return onEvent(plugin);
+    return send;
   }
 }
