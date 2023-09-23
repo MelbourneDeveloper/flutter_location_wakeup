@@ -47,7 +47,7 @@ void main() {
       );
     });
 
-    test('handles PlatformException with unknown code', () {
+    test('handles PlatformException with unknown code', () async {
       final error = PlatformException(
         code: 'UNKNOWN_CODE',
         message: 'Unknown error',
@@ -55,7 +55,17 @@ void main() {
 
       streamError(streamController, error);
 
-      expect(streamController.stream, neverEmits(anything));
+      // Listen to the stream first
+      final emittedEvents = streamController.stream.toList();
+
+      // Then close the stream
+      await streamController.close();
+
+      // Now, check the emitted events
+      expect(
+        await emittedEvents,
+        [LocationResult.error(Error.unknown)],
+      );
     });
 
     test('handles non-PlatformException errors', () {
