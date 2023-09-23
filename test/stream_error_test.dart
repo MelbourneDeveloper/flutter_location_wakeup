@@ -25,11 +25,17 @@ void main() {
       );
 
       streamError(streamController, error);
+
+      // Listen to the stream first
+      final emittedEvents = streamController.stream.toList();
+
+      // Then close the stream
       await streamController.close();
 
+      // Now, check the emitted events
       expect(
-        streamController.stream,
-        emitsInOrder([
+        await emittedEvents,
+        [
           LocationResult.error(
             const Error(
               message: 'Permission denied',
@@ -37,8 +43,7 @@ void main() {
             ),
             permissionStatus: PermissionStatus.denied,
           ),
-          emitsDone,
-        ]),
+        ],
       );
     });
 
