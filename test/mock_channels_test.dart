@@ -1,32 +1,35 @@
-import 'package:flutter/services.dart';
 import 'package:flutter_location_wakeup/flutter_location_wakeup.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'fake_stream_handler.dart';
+import 'test_extensions.dart';
 
 void main() {
   testWidgets('Receives events from the event channel', (tester) async {
     var receivedStartMonitoring = false;
 
-    final plugin = LocationWakeup();
+    //Get the method/event channels
+    final methodChannelLocationWakeup =
+        LocationWakeupPlatform.instance as MethodChannelLocationWakeup;
 
-    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
-      const MethodChannel('loc'),
-      (methodCall) async {
+    //Create a sender that sends fake events to the EventChannel that mimic
+    //the events that the device platform sends over the EventChannel
+    final sendToEventChannel =
+        tester.getEventChannelSender<LocationWakeup, LocationResult>(
+      methodChannel: methodChannelLocationWakeup.channel,
+      eventChannel: methodChannelLocationWakeup.eventChannel,
+      methodHandler: (methodCall) async {
         if (methodCall.method == 'startMonitoring') {
           receivedStartMonitoring = true;
-          return null;
         }
-        throw PlatformException(
-          code: 'UNAVAILABLE',
-          message: 'Mock error message',
-        );
+        return null;
       },
     );
 
-    TestWidgetsFlutterBinding.ensureInitialized();
+    //Create the Plugin
+    final locationWakeup = LocationWakeup();
 
-    await plugin.startMonitoring();
+    //Initialize the plugin
+    await locationWakeup.startMonitoring();
 
     final locationData = <String, dynamic>{
       'latitude': 40.7128,
@@ -37,23 +40,14 @@ void main() {
       'permissionStatus': 'granted',
     };
 
-    final methodCall = MethodCall('listen', locationData);
+    //Send the event to the EventChannel (Mimics the Swift code)
+    //eventSink?(locationData)
+    await sendToEventChannel(locationData);
 
-    final encodedData =
-        const StandardMethodCodec().encodeMethodCall(methodCall);
+    //Wait for the first LocationResult on the stream
+    final locationResult = await locationWakeup.locationUpdates.first;
 
-    const eventChannel = EventChannel('loc_stream');
-
-    final fakeStreamHandler = FakeStreamHandler();
-    tester.binding.defaultBinaryMessenger.setMockStreamHandler(
-      eventChannel,
-      fakeStreamHandler,
-    );
-
-    await eventChannel.binaryMessenger.send('loc_stream', encodedData);
-
-    final locationResult = await plugin.locationUpdates.first;
-
+    //Verify that the LocationResult is correct
     expect(receivedStartMonitoring, isTrue);
     expect(locationResult.locationOrEmpty.latitude, locationData['latitude']);
     expect(locationResult.locationOrEmpty.longitude, locationData['longitude']);

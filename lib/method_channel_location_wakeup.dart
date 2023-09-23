@@ -1,19 +1,25 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_location_wakeup/location_wakeup_platform.dart';
 
 /// An implementation of [LocationWakeupPlatform] that uses method channels.
 class MethodChannelLocationWakeup extends LocationWakeupPlatform {
-  final MethodChannel _channel = const MethodChannel('loc');
-  final EventChannel _eventChannel = const EventChannel('loc_stream');
+  @visibleForTesting
+  // ignore: public_member_api_docs
+  final MethodChannel channel = const MethodChannel('loc');
+
+  @visibleForTesting
+  // ignore: public_member_api_docs
+  final EventChannel eventChannel = const EventChannel('loc_stream');
 
   Stream<dynamic>? _locationUpdates;
 
   @override
-  Future<void> startMonitoring() => _channel.invokeMethod('startMonitoring');
+  Future<void> startMonitoring() => channel.invokeMethod('startMonitoring');
 
   @override
   Stream<dynamic> get locationUpdates {
-    _locationUpdates ??= _eventChannel.receiveBroadcastStream();
+    _locationUpdates ??= eventChannel.receiveBroadcastStream();
     return _locationUpdates!;
   }
 }
