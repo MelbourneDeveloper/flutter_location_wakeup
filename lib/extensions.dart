@@ -44,7 +44,7 @@ LocationResult toLocationResult(dynamic platformData) {
 
     return latitude is double && longitude is double
         ? LocationResult(
-            Location(latitude, longitude),
+            Location(latitude: latitude, longitude: longitude),
             permissionStatus: permissionStatusString.toPermissionStatus(),
           )
         : LocationResult.error(

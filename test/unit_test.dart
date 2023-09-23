@@ -3,8 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('LocationResult', () {
-    const location1 = Location(40.7128, 74.0060);
-    const location2 = Location(34.0522, 118.2437);
+    const location1 = Location(latitude: 40.7128, longitude: 74.0060);
+    const location2 = Location(latitude: 34.0522, longitude: 118.2437);
     const error1 = Error(
       message: 'Something went wrong',
       errorCode: ErrorCode.unknown,
@@ -90,7 +90,7 @@ void main() {
       expect(result.isError, false);
       expect(
         result.match(onSuccess: (l) => l, onError: (e) => null),
-        const Location(40.7128, 74.0060),
+        const Location(latitude: 40.7128, longitude: 74.0060),
       );
     });
 

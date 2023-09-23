@@ -13,9 +13,12 @@ void main() {
     await plugin.startMonitoring();
     final result = await resultFuture;
     expect(result.isSuccess, true);
-    final location = result.locationOr((e) => const Location(0, 0));
+    final location = result.locationOr((e) => Location.empty);
     expect(location.latitude, isNot(0));
     expect(location.longitude, isNot(0));
+    expect(location.latitude, isNot(double.nan));
+    expect(location.longitude, isNot(double.nan));
+    expect(location, isNot(Location.empty));
     expect(result.permissionStatus, PermissionStatus.granted);
   });
 

@@ -142,10 +142,29 @@ class Error {
   String toString() => 'Error(message: $message, errorCode: $errorCode)';
 }
 
-///Represents a location on earth by latitude and longitude
+///Represents a location on earth by latitude and longitude and other optional
+///information
 class Location {
-  ///Creates a location with the given latitude and longitude
-  const Location(this.latitude, this.longitude);
+  ///Creates a location
+  const Location({
+    required this.latitude,
+    required this.longitude,
+    this.altitude,
+    this.horizontalAccuracy,
+    this.verticalAccuracy,
+    this.course,
+    this.speed,
+    this.timestamp,
+    this.floorLevel,
+  });
+
+  final double? altitude;
+  final double? horizontalAccuracy;
+  final double? verticalAccuracy;
+  final double? course;
+  final double? speed;
+  final double? timestamp;
+  final int? floorLevel;
 
   ///The latitude of the location
   final double latitude;
@@ -154,7 +173,7 @@ class Location {
   final double longitude;
 
   ///Represents an empty or undefined location
-  static const empty = Location(double.nan, double.nan);
+  static const empty = Location(latitude: double.nan, longitude: double.nan);
 
   @override
   bool operator ==(Object other) {
