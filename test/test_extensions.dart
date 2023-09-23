@@ -10,7 +10,7 @@ extension TesterExtensions on WidgetTester {
       getEventChannelSender<TPlugin, R>({
     required MethodChannel methodChannel,
     required EventChannel eventChannel,
-    required Future<Object?>? Function(MethodCall)? methodHandler,
+    required Future<Object?>? Function(MethodCall) methodHandler,
   }) {
     binding.defaultBinaryMessenger.setMockMethodCallHandler(
       methodChannel,
