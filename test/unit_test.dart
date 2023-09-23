@@ -130,4 +130,47 @@ void main() {
       );
     });
   });
+
+  group('toLocationResult', () {
+    test('returns unknown error when latitude or longitude is missing', () {
+      // Scenario 1: Only latitude is provided
+      final dataWithLatitudeOnly = {'latitude': 40.7128};
+      final result1 = toLocationResult(dataWithLatitudeOnly);
+      expect(result1.isError, true);
+      expect(
+        result1.match(onSuccess: (l) => null, onError: (e) => e.errorCode),
+        ErrorCode.unknown,
+      );
+
+      // Scenario 2: Only longitude is provided
+      final dataWithLongitudeOnly = {'longitude': 74.0060};
+      final result2 = toLocationResult(dataWithLongitudeOnly);
+      expect(result2.isError, true);
+      expect(
+        result2.match(onSuccess: (l) => null, onError: (e) => e.errorCode),
+        ErrorCode.unknown,
+      );
+
+      // Scenario 3: Neither latitude nor longitude is provided
+      final dataWithoutLatLong = {};
+      final result3 = toLocationResult(dataWithoutLatLong);
+      expect(result3.isError, true);
+      expect(
+        result3.match(onSuccess: (l) => null, onError: (e) => e.errorCode),
+        ErrorCode.unknown,
+      );
+
+      // Scenario 4: Latitude and longitude are not doubles
+      final dataWithInvalidLatLong = {
+        'latitude': '40.7128',
+        'longitude': '74.0060',
+      };
+      final result4 = toLocationResult(dataWithInvalidLatLong);
+      expect(result4.isError, true);
+      expect(
+        result4.match(onSuccess: (l) => null, onError: (e) => e.errorCode),
+        ErrorCode.unknown,
+      );
+    });
+  });
 }
