@@ -159,7 +159,7 @@ class Location {
     this.floorLevel,
   });
 
-  /// The altitude of the location in meters above the WGS 84 reference 
+  /// The altitude of the location in meters above the WGS 84 reference
   /// ellipsoid.
   /// Null if the altitude is not available.
   final double? altitude;
@@ -169,7 +169,7 @@ class Location {
   /// Null if the horizontal accuracy is not available.
   final double? horizontalAccuracy;
 
-  /// The accuracy of the vertical coordinate (altitude) in meters. Represents 
+  /// The accuracy of the vertical coordinate (altitude) in meters. Represents
   /// the
   /// vertical accuracy of the altitude property.
   /// Null if the vertical accuracy is not available.
@@ -190,7 +190,7 @@ class Location {
 
   /// The floor level in buildings, relative to the building model.
   /// For example, if you are on the first floor, the value would be `1`.
-  /// Null if the floor level is not available or if the device is not in a 
+  /// Null if the floor level is not available or if the device is not in a
   /// building.
   final int? floorLevel;
 
