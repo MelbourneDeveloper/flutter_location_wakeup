@@ -33,8 +33,9 @@ void main() {
       await streamController.close();
 
       // Now, check the emitted events
+      final actual = await emittedEvents;
       expect(
-        await emittedEvents,
+        actual,
         [
           const LocationResult.error(
             Error(
@@ -50,7 +51,7 @@ void main() {
     test('handles PlatformException with unknown code', () async {
       final error = PlatformException(
         code: 'UNKNOWN_CODE',
-        message: 'Unknown error',
+        message: 'Unknown',
       );
 
       // Listen to the stream first
@@ -62,8 +63,10 @@ void main() {
       await streamController.close();
 
       // Now, check the emitted events
+      final actual = await emittedEvents;
+
       expect(
-        await emittedEvents,
+        actual,
         [
           LocationResult.unknownError,
         ],

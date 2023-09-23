@@ -4,14 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_location_wakeup/flutter_location_wakeup.dart';
 
-@visibleForTesting
-// ignore: public_member_api_docs
-const locationPermissionDeniedErrorCode = 'LOCATION_PERMISSION_DENIED';
-
-@visibleForTesting
-// ignore: public_member_api_docs
-const unknownLocationError = 'UNKNOWN_LOCATION_ERROR';
-
 ///Monitors the device's location for significant changes and wakes up the app
 ///when there is a change
 class LocationWakeup {
@@ -56,29 +48,20 @@ void streamError(
       final details = error.details as Map;
       permissionStatusString = details['permissionStatus'] as String?;
     }
-    if (error.code == locationPermissionDeniedErrorCode) {
-      final locationResult = LocationResult.error(
+    final errorCode = error.code.toErrorCode();
+    streamController.add(
+      LocationResult.error(
         Error(
-          message: error.message ?? 'Unknown permission related error',
-          errorCode: ErrorCode.locationPermissionDenied,
+          message: error.message ??
+              (errorCode == ErrorCode.unknown
+                  ? 'Unknown OS level error'
+                  : 'Unknown permission related error'),
+          errorCode: errorCode,
         ),
         permissionStatus: permissionStatusString.toPermissionStatus(),
-      );
-
-      streamController.add(locationResult);
-      return;
-    } else if (error.code == unknownLocationError) {
-      final locationResult = LocationResult.error(
-        Error(
-          message: error.message ?? 'Unknown error from platform level',
-          errorCode: ErrorCode.unknown,
-        ),
-        permissionStatus: permissionStatusString.toPermissionStatus(),
-      );
-
-      streamController.add(locationResult);
-      return;
-    }
+      ),
+    );
+    return;
   }
 
   streamController.add(
