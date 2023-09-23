@@ -7,7 +7,8 @@ extension Dasdasd on WidgetTester {
   ///Initializes the plugin, ensures that the initialization
   ///reaches the platform side, and emits one event from
   ///the event channel.
-  Future<void> Function(Map<String, dynamic>) initializeAndEmitOne<TPlugin, R>({
+  Future<void> Function(Map<String, dynamic>)
+      getEventChannelSender<TPlugin, R>({
     required MethodChannel methodChannel,
     required EventChannel eventChannel,
     required Future<Object?>? Function(MethodCall)? methodHandler,
