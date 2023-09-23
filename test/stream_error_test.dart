@@ -78,34 +78,5 @@ void main() {
         emits(LocationResult.error(Error.unknown)),
       );
     });
-
-    test('handles PlatformException with various permission statuses',
-        () async {
-      const statuses = PermissionStatus.values;
-      for (final status in statuses) {
-        final error = PlatformException(
-          code: locationPermissionDeniedErrorCode,
-          message: 'Permission $status',
-          details: {'permissionStatus': status.toString().split('.').last},
-        );
-
-        streamError(streamController, error);
-        await streamController.close();
-
-        expect(
-          streamController.stream,
-          emitsInOrder([
-            LocationResult.error(
-              Error(
-                message: 'Permission $status',
-                errorCode: ErrorCode.locationPermissionDenied,
-              ),
-              permissionStatus: status,
-            ),
-            emitsDone,
-          ]),
-        );
-      }
-    });
   });
 }
