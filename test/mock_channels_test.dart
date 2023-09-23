@@ -21,18 +21,18 @@ void main() {
 
     final locationResult =
         await tester.initializeAndEmitOne<LocationWakeup, LocationResult>(
-      LocationWakeup(),
-      methodChannelLocationWakeup.channel,
-      methodChannelLocationWakeup.eventChannel,
-      (p) => p.startMonitoring(),
-      (methodCall) async {
+      plugin: LocationWakeup(),
+      methodChannel: methodChannelLocationWakeup.channel,
+      eventChannel: methodChannelLocationWakeup.eventChannel,
+      initializePlugin: (p) => p.startMonitoring(),
+      methodHandler: (methodCall) async {
         if (methodCall.method == 'startMonitoring') {
           receivedStartMonitoring = true;
         }
         return null;
       },
-      locationData,
-      (p) => p.locationUpdates.first,
+      firstStreamData: locationData,
+      onEvent: (p) => p.locationUpdates.first,
     );
 
     expect(receivedStartMonitoring, isTrue);
