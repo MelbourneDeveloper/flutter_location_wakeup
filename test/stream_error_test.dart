@@ -82,5 +82,37 @@ void main() {
         ),
       );
     });
+
+    test('handles PlatformException with UNKNOWN_LOCATION_ERROR code',
+        () async {
+      final error = PlatformException(
+        code: 'UNKNOWN_LOCATION_ERROR',
+        message: 'Unknown location error',
+        details: {'permissionStatus': 'notDetermined'},
+      );
+
+      // Listen to the stream first
+      final emittedEvents = streamController.stream.toList();
+
+      streamError(streamController, error);
+
+      // Then close the stream
+      await streamController.close();
+
+      // Now, check the emitted events
+      expect(
+        await emittedEvents,
+        [
+          const LocationResult.error(
+            Error(
+              message: 'Unknown location error',
+              errorCode: ErrorCode.unknown,
+            ),
+            permissionStatus: PermissionStatus.notDetermined,
+          ),
+        ],
+      );
+    });
+
   });
 }

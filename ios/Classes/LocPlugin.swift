@@ -100,7 +100,7 @@ public class LocPlugin: NSObject, FlutterPlugin, FlutterStreamHandler, CLLocatio
         case .notDetermined:
             manager.requestAlwaysAuthorization()
         @unknown default:
-            eventSink?(FlutterError(code: "UNKNOWN_LOCATION_ERROR", message: "Unknown location error occurred", details: nil))
+            eventSink?(FlutterError(code: "UNKNOWN_LOCATION_ERROR", message: "Unknown location error occurred. This error originates at the iOS level.", details: nil))
         }
     }
 }

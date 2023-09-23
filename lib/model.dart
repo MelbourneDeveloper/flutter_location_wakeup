@@ -159,12 +159,39 @@ class Location {
     this.floorLevel,
   });
 
+  /// The altitude of the location in meters above the WGS 84 reference 
+  /// ellipsoid.
+  /// Null if the altitude is not available.
   final double? altitude;
+
+  /// The accuracy of the horizontal coordinate in meters. Represents the radius
+  /// of uncertainty for the location's latitude and longitude.
+  /// Null if the horizontal accuracy is not available.
   final double? horizontalAccuracy;
+
+  /// The accuracy of the vertical coordinate (altitude) in meters. Represents 
+  /// the
+  /// vertical accuracy of the altitude property.
+  /// Null if the vertical accuracy is not available.
   final double? verticalAccuracy;
+
+  /// The direction in which the device is traveling, measured in degrees and
+  /// relative to due north. Value ranges from `0.0` to `359.99`.
+  /// Null if the course is not available.
   final double? course;
+
+  /// The instantaneous speed of the device in meters per second.
+  /// Null if the speed is not available.
   final double? speed;
+
+  /// The timestamp at which this location data was generated.
+  /// Null if the timestamp is not available.
   final DateTime? timestamp;
+
+  /// The floor level in buildings, relative to the building model.
+  /// For example, if you are on the first floor, the value would be `1`.
+  /// Null if the floor level is not available or if the device is not in a 
+  /// building.
   final int? floorLevel;
 
   ///The latitude of the location

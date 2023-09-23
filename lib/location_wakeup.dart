@@ -8,6 +8,10 @@ import 'package:flutter_location_wakeup/flutter_location_wakeup.dart';
 // ignore: public_member_api_docs
 const locationPermissionDeniedErrorCode = 'LOCATION_PERMISSION_DENIED';
 
+@visibleForTesting
+// ignore: public_member_api_docs
+const unknownLocationError = 'UNKNOWN_LOCATION_ERROR';
+
 ///Monitors the device's location for significant changes and wakes up the app
 ///when there is a change
 class LocationWakeup {
@@ -57,6 +61,17 @@ void streamError(
         Error(
           message: error.message ?? 'Unknown permission related error',
           errorCode: ErrorCode.locationPermissionDenied,
+        ),
+        permissionStatus: permissionStatusString.toPermissionStatus(),
+      );
+
+      streamController.add(locationResult);
+      return;
+    } else if (error.code == unknownLocationError) {
+      final locationResult = LocationResult.error(
+        Error(
+          message: error.message ?? 'Unknown error from platform level',
+          errorCode: ErrorCode.unknown,
         ),
         permissionStatus: permissionStatusString.toPermissionStatus(),
       );
