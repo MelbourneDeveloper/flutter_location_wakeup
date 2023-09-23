@@ -24,7 +24,7 @@ void main() {
       plugin: LocationWakeup(),
       methodChannel: methodChannelLocationWakeup.channel,
       eventChannel: methodChannelLocationWakeup.eventChannel,
-      initializePlugin: (p) => p.startMonitoring(),
+      initializePlugin: (locationWakeup) => locationWakeup.startMonitoring(),
       methodHandler: (methodCall) async {
         if (methodCall.method == 'startMonitoring') {
           receivedStartMonitoring = true;
@@ -32,7 +32,7 @@ void main() {
         return null;
       },
       firstStreamData: locationData,
-      onEvent: (p) => p.locationUpdates.first,
+      onEvent: (locationWakeup) => locationWakeup.locationUpdates.first,
     );
 
     expect(receivedStartMonitoring, isTrue);
