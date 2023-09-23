@@ -3,7 +3,18 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('LocationResult', () {
-    const location1 = Location(latitude: 40.7128, longitude: 74.0060);
+    const location1 = Location(
+      latitude: 40.7128,
+      longitude: 74.0060,
+      altitude: 100,
+      horizontalAccuracy: 10,
+      verticalAccuracy: 5,
+      course: 180,
+      speed: 15,
+      timestamp: 1677648652,
+      floorLevel: 2,
+    );
+
     const location2 = Location(latitude: 34.0522, longitude: 118.2437);
     const error1 = Error(
       message: 'Something went wrong',
@@ -73,6 +84,15 @@ void main() {
       expect(result1.locationOr((e) => location2), location1);
       expect(result2.locationOr((e) => location2), location2);
       expect(result1.permissionStatus, PermissionStatus.notSpecified);
+
+      // Additional assertions for the new details
+      expect(result1.locationOrEmpty.altitude, isNotNull);
+      expect(result1.locationOrEmpty.horizontalAccuracy, isNotNull);
+      expect(result1.locationOrEmpty.verticalAccuracy, isNotNull);
+      expect(result1.locationOrEmpty.course, isNotNull);
+      expect(result1.locationOrEmpty.speed, isNotNull);
+      expect(result1.locationOrEmpty.timestamp, isNotNull);
+      expect(result1.locationOrEmpty.floorLevel, isNotNull);
     });
   });
 
@@ -82,10 +102,34 @@ void main() {
       errorCode: ErrorCode.unknown,
     );
 
-    test('toLocationResult with both latitude and longitude', () {
-      final mapWithBoth = {'latitude': 40.7128, 'longitude': 74.0060};
-      final result = toLocationResult(mapWithBoth);
+    test('toLocationResult with all details', () {
+      final mapWithAllDetails = {
+        'latitude': 40.7128,
+        'longitude': 74.0060,
+        'altitude': 100.0,
+        'horizontalAccuracy': 10.0,
+        'verticalAccuracy': 5.0,
+        'course': 180.0,
+        'speed': 15.0,
+        'timestamp': 1677648652.0, // Some UNIX timestamp
+        'floorLevel': 2,
+        'permissionStatus': 'granted',
+      };
+      final result = toLocationResult(mapWithAllDetails);
 
+      expect(result.isSuccess, true);
+      expect(result.isError, false);
+      final location = result.locationOr((e) => Location.empty);
+      expect(location.latitude, 40.7128);
+      expect(location.longitude, 74.0060);
+      expect(location.altitude, 100.0);
+      expect(location.horizontalAccuracy, 10.0);
+      expect(location.verticalAccuracy, 5.0);
+      expect(location.course, 180.0);
+      expect(location.speed, 15.0);
+      expect(location.timestamp, 1677648652.0);
+      expect(location.floorLevel, 2);
+      expect(result.permissionStatus, PermissionStatus.granted);
       expect(result.isSuccess, true);
       expect(result.isError, false);
       expect(

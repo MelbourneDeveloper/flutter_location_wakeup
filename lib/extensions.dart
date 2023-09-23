@@ -36,34 +36,10 @@ extension NullyExtensions<T> on T? {
 // ignore: avoid_annotating_with_dynamic
 LocationResult toLocationResult(dynamic platformData) {
   if (platformData is Map) {
-    final latitude = platformData['latitude'] as double?;
-    final longitude = platformData['longitude'] as double?;
-    final altitude = platformData['altitude'] as double?;
-    final horizontalAccuracy = platformData['horizontalAccuracy'] as double?;
-    final verticalAccuracy = platformData['verticalAccuracy'] as double?;
-    final course = platformData['course'] as double?;
-    final speed = platformData['speed'] as double?;
-    final timestamp =
-        platformData['timestamp'] as double?; // Convert to DateTime if needed
-    final floorLevel = platformData['floorLevel'] as int?;
     final permissionStatusString = platformData['permissionStatus'] as String?;
 
-    if (latitude != null && longitude != null) {
-      return LocationResult(
-        Location(
-          latitude: latitude,
-          longitude: longitude,
-          altitude: altitude,
-          horizontalAccuracy: horizontalAccuracy,
-          verticalAccuracy: verticalAccuracy,
-          course: course,
-          speed: speed,
-          timestamp: timestamp,
-          floorLevel: floorLevel,
-        ),
-        permissionStatus: permissionStatusString.toPermissionStatus(),
-      );
-    } else {
+    if (platformData['latitude'] is! double ||
+        platformData['longitude'] is! double) {
       return LocationResult.error(
         const Error(
           message: 'Latitude or longitude is missing',
@@ -72,6 +48,32 @@ LocationResult toLocationResult(dynamic platformData) {
         permissionStatus: permissionStatusString.toPermissionStatus(),
       );
     }
+    final latitude = platformData['latitude'] as double;
+    final longitude = platformData['longitude'] as double;
+
+    final altitude = platformData['altitude'] as double?;
+    final horizontalAccuracy = platformData['horizontalAccuracy'] as double?;
+    final verticalAccuracy = platformData['verticalAccuracy'] as double?;
+    final course = platformData['course'] as double?;
+    final speed = platformData['speed'] as double?;
+    final timestamp =
+        platformData['timestamp'] as double?; // Convert to DateTime if needed
+    final floorLevel = platformData['floorLevel'] as int?;
+
+    return LocationResult(
+      Location(
+        latitude: latitude,
+        longitude: longitude,
+        altitude: altitude,
+        horizontalAccuracy: horizontalAccuracy,
+        verticalAccuracy: verticalAccuracy,
+        course: course,
+        speed: speed,
+        timestamp: timestamp,
+        floorLevel: floorLevel,
+      ),
+      permissionStatus: permissionStatusString.toPermissionStatus(),
+    );
   }
 
   // If this happens, please record the value in platformData and open an issue
