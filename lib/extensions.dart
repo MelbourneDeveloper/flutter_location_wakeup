@@ -35,28 +35,46 @@ extension NullyExtensions<T> on T? {
 ///to the result object
 // ignore: avoid_annotating_with_dynamic
 LocationResult toLocationResult(dynamic platformData) {
-  //Why doesnt this work as an extension
-
   if (platformData is Map) {
-    final latitude = platformData['latitude'];
-    final longitude = platformData['longitude'];
+    final latitude = platformData['latitude'] as double?;
+    final longitude = platformData['longitude'] as double?;
+    final altitude = platformData['altitude'] as double?;
+    final horizontalAccuracy = platformData['horizontalAccuracy'] as double?;
+    final verticalAccuracy = platformData['verticalAccuracy'] as double?;
+    final course = platformData['course'] as double?;
+    final speed = platformData['speed'] as double?;
+    final timestamp =
+        platformData['timestamp'] as double?; // Convert to DateTime if needed
+    final floorLevel = platformData['floorLevel'] as int?;
     final permissionStatusString = platformData['permissionStatus'] as String?;
 
-    return latitude is double && longitude is double
-        ? LocationResult(
-            Location(latitude: latitude, longitude: longitude),
-            permissionStatus: permissionStatusString.toPermissionStatus(),
-          )
-        : LocationResult.error(
-            const Error(
-              message: 'Latitude or longitude is missing',
-              errorCode: ErrorCode.unknown,
-            ),
-            permissionStatus: permissionStatusString.toPermissionStatus(),
-          );
+    if (latitude != null && longitude != null) {
+      return LocationResult(
+        Location(
+          latitude: latitude,
+          longitude: longitude,
+          altitude: altitude,
+          horizontalAccuracy: horizontalAccuracy,
+          verticalAccuracy: verticalAccuracy,
+          course: course,
+          speed: speed,
+          timestamp: timestamp,
+          floorLevel: floorLevel,
+        ),
+        permissionStatus: permissionStatusString.toPermissionStatus(),
+      );
+    } else {
+      return LocationResult.error(
+        const Error(
+          message: 'Latitude or longitude is missing',
+          errorCode: ErrorCode.unknown,
+        ),
+        permissionStatus: permissionStatusString.toPermissionStatus(),
+      );
+    }
   }
 
-  //If this happens, please record the value in platformData and open an issue
-  //on the github repo
+  // If this happens, please record the value in platformData and open an issue
+  // on the github repo
   return LocationResult.unknownError;
 }

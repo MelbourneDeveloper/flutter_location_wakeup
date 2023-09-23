@@ -12,13 +12,31 @@ void main() {
     final resultFuture = plugin.locationUpdates.first;
     await plugin.startMonitoring();
     final result = await resultFuture;
+
     expect(result.isSuccess, true);
     final location = result.locationOr((e) => Location.empty);
+
+    // Asserting that latitude and longitude are not default or invalid values
     expect(location.latitude, isNot(0));
     expect(location.longitude, isNot(0));
     expect(location.latitude, isNot(double.nan));
     expect(location.longitude, isNot(double.nan));
+
+    // Asserting that other properties are also not default or invalid values
+    expect(location.altitude, isNotNull);
+    expect(location.horizontalAccuracy, isNotNull);
+    expect(location.verticalAccuracy, isNotNull);
+    expect(location.course, isNotNull);
+    expect(location.speed, isNotNull);
+    expect(location.timestamp, isNotNull);
+
+    //We don't always get this
+    //expect(location.floorLevel, isNotNull);
+
+    // Asserting that the location is not an empty location
     expect(location, isNot(Location.empty));
+
+    // Asserting that the permission status is granted
     expect(result.permissionStatus, PermissionStatus.granted);
   });
 
