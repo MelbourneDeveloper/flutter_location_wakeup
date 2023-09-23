@@ -3,10 +3,10 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'fake_stream_handler.dart';
 
-extension Dasdasd on WidgetTester {
-  ///Initializes the plugin, ensures that the initialization
-  ///reaches the platform side, and emits one event from
-  ///the event channel.
+extension TesterExtensions on WidgetTester {
+  ///Creates a function that mimics the ability to send events to an 
+  ///EventChannel and therefore achieve full integration testing of Flutter 
+  ///plugins without, except for the native code
   Future<void> Function(Map<String, dynamic>)
       getEventChannelSender<TPlugin, R>({
     required MethodChannel methodChannel,
@@ -22,8 +22,6 @@ extension Dasdasd on WidgetTester {
       eventChannel,
       FakeStreamHandler(),
     );
-
-    TestWidgetsFlutterBinding.ensureInitialized();
 
     Future<void> send(Map<String, dynamic> firstStreamData) async {
       final methodCall = MethodCall('listen', firstStreamData);
