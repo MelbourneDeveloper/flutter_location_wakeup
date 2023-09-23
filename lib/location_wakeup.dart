@@ -18,27 +18,26 @@ class LocationWakeup {
       onError: (dynamic error) {
         if (error is PlatformException) {
           if (error.code == _locationPermissionDeniedErrorCode) {
-            _streamController.add(
-              LocationResult.error(
-                Error(
-                  message: error.message ?? 'Unknown permission related error',
-                  errorCode: ErrorCode.locationPermissionDenied,
-                ),
-                permissionStatus: error.details is Map
-                    // ignore: avoid_dynamic_calls
-                    ? switch (error.details['permissionStatus']) {
-                        'granted' => PermissionStatus.granted,
-                        'denied' => PermissionStatus.denied,
-                        'permanentlyDenied' =>
-                          PermissionStatus.permanentlyDenied,
-                        'notDetermined' => PermissionStatus.notDetermined,
-                        'restricted' => PermissionStatus.restricted,
-                        'limited' => PermissionStatus.limited,
-                        _ => PermissionStatus.notSpecified,
-                      }
-                    : PermissionStatus.notSpecified,
+            final locationResult = LocationResult.error(
+              Error(
+                message: error.message ?? 'Unknown permission related error',
+                errorCode: ErrorCode.locationPermissionDenied,
               ),
+              permissionStatus: error.details is Map
+                  // ignore: avoid_dynamic_calls
+                  ? switch (error.details['permissionStatus']) {
+                      'granted' => PermissionStatus.granted,
+                      'denied' => PermissionStatus.denied,
+                      'permanentlyDenied' => PermissionStatus.permanentlyDenied,
+                      'notDetermined' => PermissionStatus.notDetermined,
+                      'restricted' => PermissionStatus.restricted,
+                      'limited' => PermissionStatus.limited,
+                      _ => PermissionStatus.notSpecified,
+                    }
+                  : PermissionStatus.notSpecified,
             );
+
+            _streamController.add(locationResult);
           }
 
           return;
@@ -58,10 +57,7 @@ class LocationWakeup {
       LocationWakeupPlatform.instance.startMonitoring();
 
   ///A stream of location changes
-  Stream<LocationResult> get locationUpdates =>
-      LocationWakeupPlatform.instance.locationUpdates.map(
-        toLocationResult,
-      );
+  Stream<LocationResult> get locationUpdates => _streamController.stream;
 
   ///Disposes the plugin and stops listening to the system location changes
   Future<void> dispose() =>
