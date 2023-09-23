@@ -9,15 +9,15 @@ void main() {
     late StreamController<LocationResult> streamController;
 
     setUp(() {
-      streamController = StreamController<LocationResult>.broadcast();
+      streamController = StreamController<LocationResult>();
     });
 
-    tearDown(() {
-      unawaited(streamController.close());
+    tearDown(() async {
+      await streamController.close();
     });
 
     test('handles PlatformException with locationPermissionDeniedErrorCode',
-        () {
+        () async {
       final error = PlatformException(
         code: locationPermissionDeniedErrorCode,
         message: 'Permission denied',
@@ -25,10 +25,11 @@ void main() {
       );
 
       streamError(streamController, error);
+      await streamController.close();
 
       expect(
         streamController.stream,
-        emits(
+        emitsInOrder([
           LocationResult.error(
             const Error(
               message: 'Permission denied',
@@ -36,7 +37,8 @@ void main() {
             ),
             permissionStatus: PermissionStatus.denied,
           ),
-        ),
+          emitsDone,
+        ]),
       );
     });
 
@@ -62,7 +64,8 @@ void main() {
       );
     });
 
-    test('handles PlatformException with various permission statuses', () {
+    test('handles PlatformException with various permission statuses',
+        () async {
       const statuses = PermissionStatus.values;
       for (final status in statuses) {
         final error = PlatformException(
@@ -72,10 +75,11 @@ void main() {
         );
 
         streamError(streamController, error);
+        await streamController.close();
 
         expect(
           streamController.stream,
-          emits(
+          emitsInOrder([
             LocationResult.error(
               Error(
                 message: 'Permission $status',
@@ -83,7 +87,8 @@ void main() {
               ),
               permissionStatus: status,
             ),
-          ),
+            emitsDone,
+          ]),
         );
       }
     });
