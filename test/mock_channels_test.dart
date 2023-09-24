@@ -53,40 +53,8 @@ void main() {
     };
 
     await sendToEventChannel(locationData);
-    final resultFuture = plugin.locationUpdates.first;
-    await plugin.startMonitoring();
-    final result = await resultFuture;
 
-    expect(result.isSuccess, true);
-    final location = result.locationOr((e) => Location.empty);
-
-    // Asserting that latitude and longitude are not default or invalid values
-    expect(location.latitude, isNot(0));
-    expect(location.longitude, isNot(0));
-    expect(location.latitude, isNot(double.nan));
-    expect(location.longitude, isNot(double.nan));
-
-    // Asserting that other properties are also not default or invalid values
-    expect(location.altitude, isNotNull);
-    expect(location.horizontalAccuracy, isNotNull);
-    expect(location.verticalAccuracy, isNotNull);
-    expect(location.course, isNotNull);
-    expect(location.speed, isNotNull);
-    expect(location.timestamp, isNotNull);
-
-    //We don't always get this
-    //expect(location.floorLevel, isNotNull);
-
-    // Asserting that the location is not an empty location
-    expect(location, isNot(Location.empty));
-
-    // Asserting that the permission status is granted
-    expect(result.permissionStatus, PermissionStatus.granted);
-
-    //Close the plugin on the device platform
-    await plugin.stopMonitoring();
-
-    //TODO: is there anything we verify on the Swift side?
+    await monitorAndWaitForFirstLocation(plugin);
   });
 
   testWidgets('Receives events from the event channel', (tester) async {
@@ -299,4 +267,42 @@ void main() {
       tester,
     ),
   );
+}
+
+///Basic test that can be run as an integration test or widget test
+Future<void> monitorAndWaitForFirstLocation(LocationWakeup plugin) async {
+  final resultFuture = plugin.locationUpdates.first;
+  await plugin.startMonitoring();
+  final result = await resultFuture;
+
+  expect(result.isSuccess, true);
+  final location = result.locationOr((e) => Location.empty);
+
+  // Asserting that latitude and longitude are not default or invalid values
+  expect(location.latitude, isNot(0));
+  expect(location.longitude, isNot(0));
+  expect(location.latitude, isNot(double.nan));
+  expect(location.longitude, isNot(double.nan));
+
+  // Asserting that other properties are also not default or invalid values
+  expect(location.altitude, isNotNull);
+  expect(location.horizontalAccuracy, isNotNull);
+  expect(location.verticalAccuracy, isNotNull);
+  expect(location.course, isNotNull);
+  expect(location.speed, isNotNull);
+  expect(location.timestamp, isNotNull);
+
+  //We don't always get this
+  //expect(location.floorLevel, isNotNull);
+
+  // Asserting that the location is not an empty location
+  expect(location, isNot(Location.empty));
+
+  // Asserting that the permission status is granted
+  expect(result.permissionStatus, PermissionStatus.granted);
+
+  //Close the plugin on the device platform
+  await plugin.stopMonitoring();
+
+  //TODO: is there anything we verify on the Swift side?
 }
