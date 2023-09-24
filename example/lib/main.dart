@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_location_wakeup/flutter_location_wakeup.dart';
+import 'nully_extensions.dart';
 
 final messengerStateKey = GlobalKey<ScaffoldMessengerState>();
 
