@@ -35,9 +35,9 @@ jobs:
         run: flutter test --coverage
 
       - name: Check Test Coverage
-        uses: VeryGoodOpenSource/very_good_coverage@v1.2.0
+        uses: VeryGoodOpenSource/very_good_coverage@v2
         with:
-          path: "client/coverage/lcov.info"
+          path: "coverage/lcov.info"
           min_coverage: 100
 
       - name: Upload coverage to Codecov
