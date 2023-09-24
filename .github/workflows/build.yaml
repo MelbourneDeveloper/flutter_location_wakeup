@@ -39,3 +39,8 @@ jobs:
         with:
           path: "client/coverage/lcov.info"
           min_coverage: 100
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
