@@ -5,16 +5,26 @@ import 'package:flutter_test/flutter_test.dart';
 import 'location_wakeup_test_extensions.dart';
 
 void main() {
-  var receivedStartMonitoring = false;
+  var receivedStartMonitoringCount = 0;
 
-  setUp(() => receivedStartMonitoring = false);
+  setUp(() => receivedStartMonitoringCount = 0);
 
   //Handle incoming method calls from the plugin to the device platform
   Future<Object?>? handleMethodCall(MethodCall methodCall) async {
     if (methodCall.method == 'startMonitoring') {
-      receivedStartMonitoring = true;
+      receivedStartMonitoringCount++;
     }
     return null;
+  }
+
+  Future<LocationResult> sendDataAndGetResult(
+    Map<String, dynamic> data,
+    WidgetTester tester,
+  ) async {
+    final (locationWakeup, sendToEventChannel) =
+        await tester.initLocationWakeupWithMockChannel(handleMethodCall);
+    await sendToEventChannel(data);
+    return locationWakeup.locationUpdates.first;
   }
 
   testWidgets('Receives events from the event channel', (tester) async {
@@ -42,7 +52,7 @@ void main() {
 
     //Verify that that calling startMonitoring on the plugin sent the
     //correct method call to the device platform
-    expect(receivedStartMonitoring, isTrue);
+    expect(receivedStartMonitoringCount, 1);
 
     //Verify that the LocationResult is correct
     expect(locationResult.locationOrEmpty.latitude, locationData['latitude']);
@@ -57,23 +67,23 @@ void main() {
     );
 
     // Simulate a permission error from iOS
-    final permissionErrorData = <String, dynamic>{
+    final errorDetails = <String, dynamic>{
       'errorCode': locationPermissionDeniedErrorCode,
-      'message': 'Location permission denied',
+      'message': 'I am an iOS error message',
       'details': {
         'permissionStatus': 'denied',
       },
     };
 
     // Send the error event to the EventChannel (Mimics the Swift code)
-    await sendToEventChannel(permissionErrorData);
+    await sendToEventChannel(errorDetails);
 
     // Wait for the first LocationResult on the stream
     final locationResult = await locationWakeup.locationUpdates.first;
 
     // Verify that calling startMonitoring on the plugin sent the
     // correct method call to the device platform
-    expect(receivedStartMonitoring, isTrue);
+    expect(receivedStartMonitoringCount, 1);
 
     // Verify that the LocationResult is an error
     expect(locationResult.isError, isTrue);
@@ -84,9 +94,143 @@ void main() {
       ErrorCode.locationPermissionDenied,
     );
 
-    // expect(
-    //   locationResult.errorOrEmpty().message,
-    //   permissionErrorData['message'],
-    // );
+    expect(
+      locationResult.errorOrEmpty().message,
+      errorDetails['message'],
+    );
   });
+
+  testWidgets('Two locations with the same values should be equal',
+      (tester) async {
+    final (locationWakeup, sendToEventChannel) =
+        await tester.initLocationWakeupWithMockChannel(handleMethodCall);
+
+    final locationData1 = {
+      'latitude': 40.7128,
+      'longitude': 74.0060,
+      'altitude': 100.0,
+      'permissionStatus': 'granted',
+    };
+
+    final locationData2 = {
+      'latitude': 40.7128,
+      'longitude': 74.0060,
+      'altitude': 100.0,
+      'permissionStatus': 'granted',
+    };
+
+    await sendToEventChannel(locationData1);
+    final locationResult1 = await locationWakeup.locationUpdates.first;
+
+    await sendToEventChannel(locationData2);
+    final locationResult2 = await locationWakeup.locationUpdates.first;
+
+    expect(locationResult1, locationResult2);
+  });
+
+  testWidgets('Two locations with different altitudes should not be equal',
+      (tester) async {
+    final (locationWakeup, sendToEventChannel) =
+        await tester.initLocationWakeupWithMockChannel(handleMethodCall);
+
+    final locationData1 = {
+      'latitude': 40.7128,
+      'longitude': 74.0060,
+      'altitude': 100.0,
+      'permissionStatus': 'granted',
+    };
+
+    final locationData2 = {
+      'latitude': 40.7128,
+      'longitude': 74.0060,
+      'altitude': 200.0,
+      'permissionStatus': 'granted',
+    };
+
+    await sendToEventChannel(locationData1);
+    final locationResult1 = await locationWakeup.locationUpdates.first;
+
+    await sendToEventChannel(locationData2);
+    final locationResult2 = await locationWakeup.locationUpdates.first;
+
+    expect(locationResult1, isNot(locationResult2));
+  });
+
+  testWidgets('Handles invalid data types gracefully', (tester) async {
+    final locationResult = await sendDataAndGetResult(
+      {
+        'latitude': '40.7128', // Invalid data type
+        'longitude': -74.0060,
+        'permissionStatus': 'granted',
+      },
+      tester,
+    );
+
+    expect(locationResult.isError, isTrue);
+    expect(receivedStartMonitoringCount, 1);
+  });
+
+  testWidgets('Handles missing data gracefully', (tester) async {
+    final locationResult = await sendDataAndGetResult(
+      {
+        'latitude': 40.7128,
+        // 'longitude': -74.0060, // Missing data
+        'permissionStatus': 'granted',
+      },
+      tester,
+    );
+
+    expect(locationResult.isError, isTrue);
+    expect(receivedStartMonitoringCount, 1);
+  });
+
+  Future<void> testPermissionStatusHandling(
+    String? permissionString,
+    PermissionStatus expectedStatus,
+    WidgetTester tester,
+  ) async {
+    final locationData = <String, dynamic>{
+      'latitude': 40.7128,
+      'longitude': -74.0060,
+    };
+
+    if (permissionString != null) {
+      locationData['permissionStatus'] = permissionString;
+    }
+
+    final locationResult = await sendDataAndGetResult(locationData, tester);
+
+    expect(locationResult.permissionStatus, expectedStatus);
+    expect(locationResult.isError, isFalse);
+    expect(locationResult.locationOrEmpty.latitude, locationData['latitude']);
+    expect(locationResult.locationOrEmpty.longitude, locationData['longitude']);
+    expect(receivedStartMonitoringCount, 1);
+  }
+
+  testWidgets(
+    'Handles restricted permission status gracefully',
+    (tester) async => testPermissionStatusHandling(
+      'restricted',
+      PermissionStatus.restricted,
+      tester,
+    ),
+  );
+
+  testWidgets(
+    'Handles limited permission status gracefully',
+    (tester) async => testPermissionStatusHandling(
+      'limited',
+      PermissionStatus.limited,
+      tester,
+    ),
+  );
+
+  testWidgets(
+    'Handles missing permission status gracefully',
+    (tester) async => testPermissionStatusHandling(
+      null,
+      PermissionStatus.notSpecified,
+      tester,
+    ),
+  );
 }

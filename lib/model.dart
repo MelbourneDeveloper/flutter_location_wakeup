@@ -46,6 +46,7 @@ final class LocationResult {
   Location locationOr(Location Function(Error error) onError) =>
       isSuccess ? _location! : onError(_error!);
 
+  ///Allows you to access the error if it is an error or a None error
   Error errorOrEmpty() => isError ? _error! : Error.empty;
 
   /// Returns the location if it's successful, or an empty location if it's an
@@ -82,7 +83,7 @@ enum ErrorCode {
   ///No known information from the device about what went wrong
   unknown,
 
-  //Not an error
+  ///Not an error
   none,
 }
 
