@@ -31,7 +31,6 @@ class LocationWakeup {
   ///resources. This plugin is only designed to start once, so if you need
   ///to listen again, you will need to create a new instance of this plugin.
   Future<void> stopMonitoring() {
-
     //TODO: await this
     //For some reason, if we await this, the test hangs
     //Find a way to await this in the test
