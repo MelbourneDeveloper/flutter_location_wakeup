@@ -141,6 +141,11 @@ void main() {
     await locationWakeup.stopMonitoring();
 
     expect(receivedStopMonitoringCount, 1);
+
+    expect(
+      locationResult.locationOrEmpty.toString(),
+      'Location(latitude: 40.7128, longitude: -74.006)',
+    );
   });
 
   testWidgets('Receives permission error from iOS', (tester) async {
