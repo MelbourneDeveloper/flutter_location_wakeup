@@ -18,6 +18,9 @@ class MethodChannelLocationWakeup extends LocationWakeupPlatform {
   Future<void> startMonitoring() => channel.invokeMethod('startMonitoring');
 
   @override
+  Future<void> stopMonitoring() => channel.invokeMethod('stopMonitoring');
+
+  @override
   Stream<dynamic> get locationUpdates {
     _locationUpdates ??= eventChannel.receiveBroadcastStream();
     return _locationUpdates!;

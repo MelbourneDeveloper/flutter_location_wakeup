@@ -29,6 +29,11 @@ abstract class LocationWakeupPlatform extends PlatformInterface {
   ///Start listening for location changes
   Future<void> startMonitoring();
 
+  ///Stops listening to the system location changes and disposes platform
+  ///resources. This plugin is only designed to start once, so if you need
+  ///to listen again, you will need to create a new instance of this plugin.
+  Future<void> stopMonitoring();
+
   ///A stream of location changes
   Stream<dynamic> get locationUpdates;
 }
