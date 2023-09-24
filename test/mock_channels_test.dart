@@ -157,26 +157,28 @@ void main() {
   });
 
   testWidgets('Handles invalid data types gracefully', (tester) async {
-    final locationData = {
-      'latitude': '40.7128', // Invalid data type
-      'longitude': -74.0060,
-      'permissionStatus': 'granted',
-    };
-
-    final locationResult = await sendDataAndGetResult(locationData, tester);
+    final locationResult = await sendDataAndGetResult(
+      {
+        'latitude': '40.7128', // Invalid data type
+        'longitude': -74.0060,
+        'permissionStatus': 'granted',
+      },
+      tester,
+    );
 
     expect(locationResult.isError, isTrue);
     expect(receivedStartMonitoring, isTrue);
   });
 
   testWidgets('Handles missing data gracefully', (tester) async {
-    final locationData = {
-      'latitude': 40.7128,
-      // 'longitude': -74.0060, // Missing data
-      'permissionStatus': 'granted',
-    };
-
-    final locationResult = await sendDataAndGetResult(locationData, tester);
+    final locationResult = await sendDataAndGetResult(
+      {
+        'latitude': 40.7128,
+        // 'longitude': -74.0060, // Missing data
+        'permissionStatus': 'granted',
+      },
+      tester,
+    );
 
     expect(locationResult.isError, isTrue);
     expect(receivedStartMonitoring, isTrue);
