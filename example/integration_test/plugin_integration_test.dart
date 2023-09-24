@@ -38,6 +38,11 @@ void main() {
 
     // Asserting that the permission status is granted
     expect(result.permissionStatus, PermissionStatus.granted);
+
+    //Close the plugin on the device platform
+    await plugin.stopMonitoring();
+
+    //TODO: is there anything we verify on the Swift side?
   });
 
   testWidgets('Monitor And Wait For First Permission Error',
@@ -48,5 +53,7 @@ void main() {
     final result = await resultFuture;
     expect(result.isSuccess, false);
     expect(result.permissionStatus, PermissionStatus.denied);
+    //Close the plugin on the device platform
+    await plugin.stopMonitoring();
   });
 }
