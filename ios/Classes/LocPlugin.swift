@@ -20,11 +20,20 @@ public class LocPlugin: NSObject, FlutterPlugin, FlutterStreamHandler, CLLocatio
         case "startMonitoring":
             startMonitoring()
             result(nil)
+        case "stopMonitoring":
+            stopMonitoring()
+            result(nil)
         default:
             result(FlutterMethodNotImplemented)
         }
     }
-    
+
+    private func stopMonitoring() {
+        locationManager?.stopMonitoringSignificantLocationChanges()
+        locationManager?.delegate = nil
+        eventSink = nil
+    }
+ 
     private func startMonitoring() {
         locationManager = CLLocationManager()
         locationManager?.delegate = self

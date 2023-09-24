@@ -6,13 +6,19 @@ import 'location_wakeup_test_extensions.dart';
 
 void main() {
   var receivedStartMonitoringCount = 0;
+  var receivedStopMonitoringCount = 0;
 
-  setUp(() => receivedStartMonitoringCount = 0);
+  setUp(() {
+    receivedStartMonitoringCount = 0;
+    receivedStopMonitoringCount = 0;
+  });
 
   //Handle incoming method calls from the plugin to the device platform
   Future<Object?>? handleMethodCall(MethodCall methodCall) async {
     if (methodCall.method == 'startMonitoring') {
       receivedStartMonitoringCount++;
+    } else if (methodCall.method == 'stopMonitoring') {
+      receivedStopMonitoringCount++;
     }
     return null;
   }
@@ -57,6 +63,10 @@ void main() {
     //Verify that the LocationResult is correct
     expect(locationResult.locationOrEmpty.latitude, locationData['latitude']);
     expect(locationResult.locationOrEmpty.longitude, locationData['longitude']);
+
+    await locationWakeup.stopMonitoring();
+    
+    expect(receivedStopMonitoringCount, 1);
   });
 
   testWidgets('Receives permission error from iOS', (tester) async {

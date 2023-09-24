@@ -27,12 +27,23 @@ class LocationWakeup {
   Future<void> startMonitoring() =>
       LocationWakeupPlatform.instance.startMonitoring();
 
+  ///Stops listening to the system location changes and disposes platform
+  ///resources. This plugin is only designed to start once, so if you need
+  ///to listen again, you will need to create a new instance of this plugin.
+  Future<void> stopMonitoring() {
+
+    //TODO: await this
+    //For some reason, if we await this, the test hangs
+    //Find a way to await this in the test
+    _subscription.cancel();
+    return Future.wait([
+      _streamController.close(),
+      LocationWakeupPlatform.instance.stopMonitoring(),
+    ]);
+  }
+
   ///A stream of location changes
   Stream<LocationResult> get locationUpdates => _streamController.stream;
-
-  ///Disposes the plugin and stops listening to the system location changes
-  Future<void> dispose() =>
-      Future.wait([_subscription.cancel(), _streamController.close()]);
 }
 
 @visibleForTesting
