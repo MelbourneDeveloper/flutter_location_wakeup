@@ -5,14 +5,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'location_wakeup_test_extensions.dart';
 
 void main() {
-  var receivedStartMonitoring = false;
+  var receivedStartMonitoringCount = 0;
 
-  setUp(() => receivedStartMonitoring = false);
+  setUp(() => receivedStartMonitoringCount = 0);
 
   //Handle incoming method calls from the plugin to the device platform
   Future<Object?>? handleMethodCall(MethodCall methodCall) async {
     if (methodCall.method == 'startMonitoring') {
-      receivedStartMonitoring = true;
+      receivedStartMonitoringCount++;
     }
     return null;
   }
@@ -52,7 +52,7 @@ void main() {
 
     //Verify that that calling startMonitoring on the plugin sent the
     //correct method call to the device platform
-    expect(receivedStartMonitoring, isTrue);
+    expect(receivedStartMonitoringCount, 1);
 
     //Verify that the LocationResult is correct
     expect(locationResult.locationOrEmpty.latitude, locationData['latitude']);
@@ -83,7 +83,7 @@ void main() {
 
     // Verify that calling startMonitoring on the plugin sent the
     // correct method call to the device platform
-    expect(receivedStartMonitoring, isTrue);
+    expect(receivedStartMonitoringCount, 1);
 
     // Verify that the LocationResult is an error
     expect(locationResult.isError, isTrue);
@@ -167,7 +167,7 @@ void main() {
     );
 
     expect(locationResult.isError, isTrue);
-    expect(receivedStartMonitoring, isTrue);
+    expect(receivedStartMonitoringCount, 1);
   });
 
   testWidgets('Handles missing data gracefully', (tester) async {
@@ -181,7 +181,7 @@ void main() {
     );
 
     expect(locationResult.isError, isTrue);
-    expect(receivedStartMonitoring, isTrue);
+    expect(receivedStartMonitoringCount, 1);
   });
 
   testWidgets('Handles missing permission status gracefully', (tester) async {
@@ -197,6 +197,6 @@ void main() {
     expect(locationResult.isError, isFalse);
     expect(locationResult.locationOrEmpty.latitude, locationData['latitude']);
     expect(locationResult.locationOrEmpty.longitude, locationData['longitude']);
-    expect(receivedStartMonitoring, isTrue);
+    expect(receivedStartMonitoringCount, 1);
   });
 }
