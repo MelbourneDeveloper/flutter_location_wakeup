@@ -184,6 +184,15 @@ void main() {
     // Wait for the first LocationResult on the stream
     final locationResult = await locationWakeup.locationUpdates.first;
 
+    locationResult.match(
+      onSuccess: (location) {
+        fail('Expected error but got success');
+      },
+      onError: (error) {
+        expect(error.message, 'I am an iOS error message');
+      },
+    );
+
     // Verify that calling startMonitoring on the plugin sent the
     // correct method call to the device platform
     expect(receivedStartMonitoringCount, 1);
