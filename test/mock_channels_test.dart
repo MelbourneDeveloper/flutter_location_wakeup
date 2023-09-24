@@ -306,3 +306,16 @@ Future<void> monitorAndWaitForFirstLocation(LocationWakeup plugin) async {
 
   //TODO: is there anything we verify on the Swift side?
 }
+
+// ignore: unreachable_from_main
+Future<void> monitorAndWaitForPermissionError(
+  LocationWakeup plugin,
+) async {
+  final resultFuture = plugin.locationUpdates.first;
+  await plugin.startMonitoring();
+  final result = await resultFuture;
+  expect(result.isSuccess, false);
+  expect(result.permissionStatus, PermissionStatus.denied);
+  //Close the plugin on the device platform
+  await plugin.stopMonitoring();
+}
