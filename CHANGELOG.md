@@ -15,3 +15,8 @@
 
 ## 0.5.0-beta
 * Image link fixes
+
+## 0.6.0-beta
+* Add ability to location changes on the iOS side
+* Small fixes
+* General cleanup

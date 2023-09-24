@@ -1,6 +1,6 @@
 name: flutter_location_wakeup
 description: Listens for significant location changes on the device and wakes it up when they arrive
-version: 0.5.0-beta
+version: 0.6.0-beta
 repository: https://github.com/MelbourneDeveloper/flutter_location_wakeup
 
 environment:
