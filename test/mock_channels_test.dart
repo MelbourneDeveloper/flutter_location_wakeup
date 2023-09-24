@@ -57,6 +57,25 @@ void main() {
     await monitorAndWaitForFirstLocation(plugin);
   });
 
+  testWidgets('Monitor And Wait For First Permission Error', (tester) async {
+    //Initialize the plugin and get the locationWakeup and sendToEventChannel
+    final (plugin, sendToEventChannel) =
+        await tester.initLocationWakeupWithMockChannel(
+      handleMethodCall,
+    );
+
+    // Simulate a permission error from the device
+    await sendToEventChannel(<String, dynamic>{
+      'errorCode': locationPermissionDeniedErrorCode,
+      'message': 'Permission denied',
+      'details': {
+        'permissionStatus': 'denied',
+      },
+    });
+
+    await monitorAndWaitForPermissionError(plugin);
+  });
+
   testWidgets('Receives events from the event channel', (tester) async {
     //Initialize the plugin and get the locationWakeup and sendToEventChannel
     final (locationWakeup, sendToEventChannel) =
