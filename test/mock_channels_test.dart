@@ -199,4 +199,40 @@ void main() {
     expect(locationResult.locationOrEmpty.longitude, locationData['longitude']);
     expect(receivedStartMonitoringCount, 1);
   });
+
+  Future<void> testPermissionStatusHandling(
+    String permissionString,
+    PermissionStatus expectedStatus,
+    WidgetTester tester,
+  ) async {
+    final locationData = {
+      'latitude': 40.7128,
+      'longitude': -74.0060,
+      'permissionStatus': permissionString,
+    };
+
+    final locationResult = await sendDataAndGetResult(locationData, tester);
+
+    expect(locationResult.permissionStatus, expectedStatus);
+    expect(locationResult.isError, isFalse);
+    expect(receivedStartMonitoringCount, 1);
+  }
+
+  testWidgets(
+    'Handles restricted permission status gracefully',
+    (tester) async => testPermissionStatusHandling(
+      'restricted',
+      PermissionStatus.restricted,
+      tester,
+    ),
+  );
+
+  testWidgets(
+    'Handles limited permission status gracefully',
+    (tester) async => testPermissionStatusHandling(
+      'limited',
+      PermissionStatus.limited,
+      tester,
+    ),
+  );
 }
