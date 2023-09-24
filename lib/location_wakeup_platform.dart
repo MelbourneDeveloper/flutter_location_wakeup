@@ -13,11 +13,18 @@ abstract class LocationWakeupPlatform extends PlatformInterface {
   /// The default instance of [LocationWakeupPlatform] to use.
   static LocationWakeupPlatform get instance => _instance;
 
-  /// Platform-specific plugins should set this with their own platform-specific
+  /// ⚠️ Don't use this. If you want to mock incoming events from the device
+  /// platform for testing, see the mock_channels_test where it mocks
+  /// incoming events from the device platform.
+  ///
+  /// However, if you are building and implementation for a platform, you can
+  /// use this to set the static instance of [LocationWakeupPlatform].
+  // coverage:ignore-start
   static set instance(LocationWakeupPlatform instance) {
     PlatformInterface.verifyToken(instance, _token);
     _instance = instance;
   }
+  // coverage:ignore-end
 
   ///Start listening for location changes
   Future<void> startMonitoring();
