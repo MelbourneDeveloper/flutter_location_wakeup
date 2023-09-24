@@ -76,6 +76,37 @@ void main() {
     await monitorAndWaitForPermissionError(plugin);
   });
 
+  testWidgets('Monitor And Handle Null Error Message', (tester) async {
+    //Initialize the plugin and get the locationWakeup and sendToEventChannel
+    final (plugin, sendToEventChannel) =
+        await tester.initLocationWakeupWithMockChannel(
+      handleMethodCall,
+    );
+
+    // Simulate a PlatformException with a null message
+    final errorDetails = <String, dynamic>{
+      'errorCode': 'unknown', // or any other error code you want to test
+      'message': null, // This will make the error.message null
+      'details': {
+        'permissionStatus': 'denied',
+      },
+    };
+
+    await sendToEventChannel(errorDetails);
+
+    final result = await plugin.locationUpdates.first;
+
+    expect(result.isError, true);
+    expect(
+      result.errorOrEmpty().message,
+      'Unknown OS level error',
+    ); // This is the fallback message when error.message is null
+    expect(result.permissionStatus, PermissionStatus.denied);
+
+    //Close the plugin on the device platform
+    await plugin.stopMonitoring();
+  });
+
   testWidgets('Receives events from the event channel', (tester) async {
     //Initialize the plugin and get the locationWakeup and sendToEventChannel
     final (locationWakeup, sendToEventChannel) =

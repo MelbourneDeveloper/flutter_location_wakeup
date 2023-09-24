@@ -9,11 +9,11 @@ class FakeStreamHandler extends MockStreamHandler {
   @override
   void onListen(Object? arguments, MockStreamHandlerEventSink events) {
     if (arguments is Map) {
-      if (arguments.containsKey('errorCode')) {
+      if (arguments['errorCode'] is String) {
         events.error(
           code: arguments['errorCode'] as String,
-          message: arguments['message'] as String,
-          details: arguments['details'] as Map,
+          message: arguments['message'] as String?,
+          details: arguments['details'] as Map?,
         );
         return;
       }
