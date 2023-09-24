@@ -136,14 +136,16 @@ void main() {
           16,
           30,
           52,
-        ),
+        ).toUtc(),
       );
       expect(location.floorLevel, 2);
       expect(result.permissionStatus, PermissionStatus.granted);
       expect(result.isSuccess, true);
       expect(result.isError, false);
+
       final matchedLocation =
           result.match(onSuccess: (l) => l, onError: (e) => null);
+
       expect(
         matchedLocation,
         Location(
@@ -154,7 +156,7 @@ void main() {
           verticalAccuracy: 5,
           course: 180,
           speed: 15,
-          timestamp: DateTime(2023, 03, 01, 16, 30, 52),
+          timestamp: DateTime.utc(2023, 03, 01, 5, 30, 52),
           floorLevel: 2,
         ),
       );

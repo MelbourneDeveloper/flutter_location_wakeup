@@ -58,7 +58,10 @@ LocationResult toLocationResult(dynamic platformData) {
     final unixTimestamp = platformData['timestamp'] as double?;
 
     final timestamp = unixTimestamp != null
-        ? DateTime.fromMillisecondsSinceEpoch(unixTimestamp.toInt() * 1000)
+        ? DateTime.fromMillisecondsSinceEpoch(
+            unixTimestamp.toInt() * 1000,
+            isUtc: true,
+          )
         : null;
 
     final floorLevel = platformData['floorLevel'] as int?;
