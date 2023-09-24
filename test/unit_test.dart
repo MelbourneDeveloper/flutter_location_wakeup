@@ -129,14 +129,7 @@ void main() {
       expect(location.speed, 15.0);
       expect(
         location.timestamp,
-        DateTime(
-          2023,
-          03,
-          1,
-          16,
-          30,
-          52,
-        ).toUtc(),
+        DateTime.utc(2023, 03, 01, 5, 30, 52),
       );
       expect(location.floorLevel, 2);
       expect(result.permissionStatus, PermissionStatus.granted);
