@@ -130,6 +130,20 @@ void main() {
     //Wait for the first LocationResult on the stream
     final locationResult = await locationWakeup.locationUpdates.first;
 
+    locationResult.match(
+      onSuccess: (location) {
+        expect(location.latitude, locationData['latitude']);
+        expect(location.longitude, locationData['longitude']);
+        expect(
+          location.toString(),
+          'Location(latitude: 40.7128, longitude: -74.006)',
+        );
+      },
+      onError: (error) {
+        fail('Expected success but got error: ${error.message}');
+      },
+    );
+
     //Verify that that calling startMonitoring on the plugin sent the
     //correct method call to the device platform
     expect(receivedStartMonitoringCount, 1);
