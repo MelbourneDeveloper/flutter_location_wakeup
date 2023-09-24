@@ -17,6 +17,16 @@ void main() {
     return null;
   }
 
+  Future<LocationResult> sendDataAndGetResult(
+    Map<String, dynamic> data,
+    WidgetTester tester,
+  ) async {
+    final (locationWakeup, sendToEventChannel) =
+        await tester.initLocationWakeupWithMockChannel(handleMethodCall);
+    await sendToEventChannel(data);
+    return locationWakeup.locationUpdates.first;
+  }
+
   testWidgets('Receives events from the event channel', (tester) async {
     //Initialize the plugin and get the locationWakeup and sendToEventChannel
     final (locationWakeup, sendToEventChannel) =
@@ -147,51 +157,44 @@ void main() {
   });
 
   testWidgets('Handles invalid data types gracefully', (tester) async {
-    final (locationWakeup, sendToEventChannel) =
-        await tester.initLocationWakeupWithMockChannel(handleMethodCall);
-
     final locationData = {
       'latitude': '40.7128', // Invalid data type
       'longitude': -74.0060,
       'permissionStatus': 'granted',
     };
 
-    await sendToEventChannel(locationData);
-    final locationResult = await locationWakeup.locationUpdates.first;
+    final locationResult = await sendDataAndGetResult(locationData, tester);
 
     expect(locationResult.isError, isTrue);
+    expect(receivedStartMonitoring, isTrue);
   });
 
   testWidgets('Handles missing data gracefully', (tester) async {
-    final (locationWakeup, sendToEventChannel) =
-        await tester.initLocationWakeupWithMockChannel(handleMethodCall);
-
     final locationData = {
       'latitude': 40.7128,
       // 'longitude': -74.0060, // Missing data
       'permissionStatus': 'granted',
     };
 
-    await sendToEventChannel(locationData);
-    final locationResult = await locationWakeup.locationUpdates.first;
+    final locationResult = await sendDataAndGetResult(locationData, tester);
 
     expect(locationResult.isError, isTrue);
+    expect(receivedStartMonitoring, isTrue);
   });
 
   testWidgets('Handles missing permission status gracefully', (tester) async {
-    final (locationWakeup, sendToEventChannel) =
-        await tester.initLocationWakeupWithMockChannel(handleMethodCall);
-
     final locationData = {
       'latitude': 40.7128,
       'longitude': -74.0060,
     };
 
-    await sendToEventChannel(locationData);
-    final locationResult = await locationWakeup.locationUpdates.first;
+    final locationResult = await sendDataAndGetResult(locationData, tester);
 
     // Check that the permissionStatus is set to notSpecified when it's missing
     expect(locationResult.permissionStatus, PermissionStatus.notSpecified);
     expect(locationResult.isError, isFalse);
+    expect(locationResult.locationOrEmpty.latitude, locationData['latitude']);
+    expect(locationResult.locationOrEmpty.longitude, locationData['longitude']);
+    expect(receivedStartMonitoring, isTrue);
   });
 }
