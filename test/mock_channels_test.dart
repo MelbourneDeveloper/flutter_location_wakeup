@@ -184,37 +184,26 @@ void main() {
     expect(receivedStartMonitoringCount, 1);
   });
 
-  testWidgets('Handles missing permission status gracefully', (tester) async {
-    final locationData = {
-      'latitude': 40.7128,
-      'longitude': -74.0060,
-    };
-
-    final locationResult = await sendDataAndGetResult(locationData, tester);
-
-    // Check that the permissionStatus is set to notSpecified when it's missing
-    expect(locationResult.permissionStatus, PermissionStatus.notSpecified);
-    expect(locationResult.isError, isFalse);
-    expect(locationResult.locationOrEmpty.latitude, locationData['latitude']);
-    expect(locationResult.locationOrEmpty.longitude, locationData['longitude']);
-    expect(receivedStartMonitoringCount, 1);
-  });
-
   Future<void> testPermissionStatusHandling(
-    String permissionString,
+    String? permissionString,
     PermissionStatus expectedStatus,
     WidgetTester tester,
   ) async {
-    final locationData = {
+    final locationData = <String, dynamic>{
       'latitude': 40.7128,
       'longitude': -74.0060,
-      'permissionStatus': permissionString,
     };
+
+    if (permissionString != null) {
+      locationData['permissionStatus'] = permissionString;
+    }
 
     final locationResult = await sendDataAndGetResult(locationData, tester);
 
     expect(locationResult.permissionStatus, expectedStatus);
     expect(locationResult.isError, isFalse);
+    expect(locationResult.locationOrEmpty.latitude, locationData['latitude']);
+    expect(locationResult.locationOrEmpty.longitude, locationData['longitude']);
     expect(receivedStartMonitoringCount, 1);
   }
 
@@ -232,6 +221,15 @@ void main() {
     (tester) async => testPermissionStatusHandling(
       'limited',
       PermissionStatus.limited,
+      tester,
+    ),
+  );
+
+  testWidgets(
+    'Handles missing permission status gracefully',
+    (tester) async => testPermissionStatusHandling(
+      null,
+      PermissionStatus.notSpecified,
       tester,
     ),
   );
