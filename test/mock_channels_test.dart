@@ -89,4 +89,109 @@ void main() {
       errorDetails['message'],
     );
   });
+
+  testWidgets('Two locations with the same values should be equal',
+      (tester) async {
+    final (locationWakeup, sendToEventChannel) =
+        await tester.initLocationWakeupWithMockChannel(handleMethodCall);
+
+    final locationData1 = {
+      'latitude': 40.7128,
+      'longitude': 74.0060,
+      'altitude': 100.0,
+      'permissionStatus': 'granted',
+    };
+
+    final locationData2 = {
+      'latitude': 40.7128,
+      'longitude': 74.0060,
+      'altitude': 100.0,
+      'permissionStatus': 'granted',
+    };
+
+    await sendToEventChannel(locationData1);
+    final locationResult1 = await locationWakeup.locationUpdates.first;
+
+    await sendToEventChannel(locationData2);
+    final locationResult2 = await locationWakeup.locationUpdates.first;
+
+    expect(locationResult1, locationResult2);
+  });
+
+  testWidgets('Two locations with different altitudes should not be equal',
+      (tester) async {
+    final (locationWakeup, sendToEventChannel) =
+        await tester.initLocationWakeupWithMockChannel(handleMethodCall);
+
+    final locationData1 = {
+      'latitude': 40.7128,
+      'longitude': 74.0060,
+      'altitude': 100.0,
+      'permissionStatus': 'granted',
+    };
+
+    final locationData2 = {
+      'latitude': 40.7128,
+      'longitude': 74.0060,
+      'altitude': 200.0,
+      'permissionStatus': 'granted',
+    };
+
+    await sendToEventChannel(locationData1);
+    final locationResult1 = await locationWakeup.locationUpdates.first;
+
+    await sendToEventChannel(locationData2);
+    final locationResult2 = await locationWakeup.locationUpdates.first;
+
+    expect(locationResult1, isNot(locationResult2));
+  });
+
+  testWidgets('Handles invalid data types gracefully', (tester) async {
+    final (locationWakeup, sendToEventChannel) =
+        await tester.initLocationWakeupWithMockChannel(handleMethodCall);
+
+    final locationData = {
+      'latitude': '40.7128', // Invalid data type
+      'longitude': -74.0060,
+      'permissionStatus': 'granted',
+    };
+
+    await sendToEventChannel(locationData);
+    final locationResult = await locationWakeup.locationUpdates.first;
+
+    expect(locationResult.isError, isTrue);
+  });
+
+  testWidgets('Handles missing data gracefully', (tester) async {
+    final (locationWakeup, sendToEventChannel) =
+        await tester.initLocationWakeupWithMockChannel(handleMethodCall);
+
+    final locationData = {
+      'latitude': 40.7128,
+      // 'longitude': -74.0060, // Missing data
+      'permissionStatus': 'granted',
+    };
+
+    await sendToEventChannel(locationData);
+    final locationResult = await locationWakeup.locationUpdates.first;
+
+    expect(locationResult.isError, isTrue);
+  });
+
+  testWidgets('Handles missing permission status gracefully', (tester) async {
+    final (locationWakeup, sendToEventChannel) =
+        await tester.initLocationWakeupWithMockChannel(handleMethodCall);
+
+    final locationData = {
+      'latitude': 40.7128,
+      'longitude': -74.0060,
+    };
+
+    await sendToEventChannel(locationData);
+    final locationResult = await locationWakeup.locationUpdates.first;
+
+    // Check that the permissionStatus is set to notSpecified when it's missing
+    expect(locationResult.permissionStatus, PermissionStatus.notSpecified);
+    expect(locationResult.isError, isFalse);
+  });
 }
