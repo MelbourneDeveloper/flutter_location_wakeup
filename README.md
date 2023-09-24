@@ -4,7 +4,7 @@
 
 The plugin's iOS implementation predominantly relies on Apple's [`startMonitoringSignificantLocationChanges`](https://developer.apple.com/documentation/corelocation/cllocationmanager/1423531-startmonitoringsignificantlocati) Swift API. For an in-depth understanding of its functionality, refer to Apple's official documentation. As of now, the plugin offers support exclusively for iOS, with Android support in the pipeline.
 
-![example workflow](https://github.com/MelbourneDeveloper/flutter_location_wakeup/actions/workflows/build_and_test.yml/badge.svg)
+![Build Status Badge](https://github.com/MelbourneDeveloper/flutter_location_wakeup/actions/workflows/build.yaml/badge.svg)
 
 <a href="https://codecov.io/gh/melbournedeveloper/flutter_location_wakeup"><img src="https://codecov.io/gh/melbournedeveloper/flutter_location_wakeup/branch/main/graph/badge.svg" alt="codecov"></a>
 
